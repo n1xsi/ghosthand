@@ -1,5 +1,7 @@
+from scripts.autopistol import autopistol_instance
 from scripts.bunnyhop import bhop_instance
 from scripts.mrc import mrc_instance
+
 import dearpygui.dearpygui as dpg
 
 # -------------------------- CALLBACKS --------------------------
@@ -44,6 +46,15 @@ def update_mrc_speed(sender, app_data):
     print(f"[debug-UI] mrc speed set to {app_data:.4f}")
 
 
+# ----- autopistol -----
+def toggle_autopistol(sender, app_data):
+    autopistol_instance.enabled = app_data
+    status = "ON" if app_data else "OFF"
+    print(f"[debug-UI] autopistol is {status}")
+
+# ---------------------------------------------------------------
+
+
 DEEP_PURPLE = (139, 0, 255, 255)
 SOFT_PURPLE = (163, 102, 255, 255)
 ACTIVE_PURPLE = (184, 102, 255, 255)
@@ -69,7 +80,7 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
             dpg.add_spacer(height=10)
             dpg.add_checkbox(label="AimPull", enabled=False)
             dpg.add_checkbox(label="Pixel Trigger Bot", enabled=False)
-            dpg.add_checkbox(label="AutoPistol", enabled=False)
+            dpg.add_checkbox(label="AutoPistol", callback=toggle_autopistol)
             dpg.add_checkbox(label="Mini-Recoil Control", callback=toggle_mrc)
 
             with dpg.group(tag="Mini-Recoil Control Settings", show=False):
@@ -166,17 +177,18 @@ with dpg.theme() as global_theme:
         dpg.add_theme_color(dpg.mvThemeCol_SliderGrab, DEEP_PURPLE)
         dpg.add_theme_color(dpg.mvThemeCol_SliderGrabActive, ACTIVE_PURPLE)
 
-dpg.bind_theme(global_theme)
-
 # -------------------------- ЗАПУСК --------------------------
-dpg.create_viewport(title='ghosthand', width=515, height=390, resizable=False, decorated=True)
-dpg.setup_dearpygui()
+if __name__ == "__main__":
+    dpg.bind_theme(global_theme)
+    dpg.create_viewport(title='ghosthand', width=515, height=390, resizable=False, decorated=True)
+    dpg.setup_dearpygui()
 
-# ----- Запуск скриптов -----
-bhop_instance.start()
-mrc_instance.start()
+    # ----- Запуск скриптов -----
+    bhop_instance.start()
+    mrc_instance.start()
+    autopistol_instance.start()
 
-dpg.show_viewport()
-dpg.set_primary_window("Primary Window", True)
-dpg.start_dearpygui()
-dpg.destroy_context()
+    dpg.show_viewport()
+    dpg.set_primary_window("Primary Window", True)
+    dpg.start_dearpygui()
+    dpg.destroy_context()
