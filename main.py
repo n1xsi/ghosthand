@@ -1,7 +1,10 @@
 from scripts.bunnyhop import bhop_instance
+from scripts.mrc import mrc_instance
 import dearpygui.dearpygui as dpg
 
 # -------------------------- CALLBACKS --------------------------
+
+# ----- bhop -----
 def toggle_bhop(sender, app_data):
     """
     sender: кто вызвал функцию (чекбокс)
@@ -22,6 +25,12 @@ def toggle_random_offset(sender, app_data):
     bhop_instance.random_offset = app_data
     status = "ON" if app_data else "OFF"
     print(f"[debug-UI] bhop random offset is {status}")
+
+# ----- mrc -----
+def toggle_mrc(sender, app_data):
+    mrc_instance.enabled = app_data
+    status = "ON" if app_data else "OFF"
+    print(f"[debug-UI] mrc is {status}")
 
 
 # -------------------------- GUI SETUP --------------------------
@@ -47,7 +56,8 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
             dpg.add_checkbox(label="Smooth", enabled=False)
             dpg.add_checkbox(label="Pixel Trigger Bot", enabled=False)
             dpg.add_checkbox(label="AutoPistol", enabled=False)
-            dpg.add_checkbox(label="Micro-Recoil Control", enabled=False)
+            dpg.add_checkbox(label="Mini-Recoil Control", callback=toggle_mrc)
+            # FIXME: add slider for "Mini-Recoil Control" strength
 
         # Вкладка 2: Anti-Aim
         with dpg.tab(label="Anti-Aim"):
@@ -102,6 +112,7 @@ dpg.setup_dearpygui()
 
 # ----- Запуск скриптов -----
 bhop_instance.start()
+mrc_instance.start()
 
 dpg.show_viewport()
 dpg.set_primary_window("Primary Window", True)
