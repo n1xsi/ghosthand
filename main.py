@@ -32,6 +32,10 @@ def toggle_mrc(sender, app_data):
     status = "ON" if app_data else "OFF"
     print(f"[debug-UI] mrc is {status}")
 
+DEEP_PURPLE = (139, 0, 255, 255)
+SOFT_PURPLE = (163, 102, 255, 255)
+ACTIVE_PURPLE = (184, 102, 255, 255)
+ADDITIONAL_BLACK = (150, 150, 150, 200)
 
 # -------------------------- GUI SETUP --------------------------
 dpg.create_context()  # Инициализация DearPyGui
@@ -40,10 +44,9 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
     
     # Заголовок
     with dpg.group(horizontal=True):
-        dpg.add_text("GHOSTHAND", color=(139, 0, 255, 255))
-        dpg.add_text("v0.2 | Dev Build", color=(150, 150, 150, 200))
+        dpg.add_text("GHOSTHAND", color=DEEP_PURPLE, pos=(150, 0))
+        dpg.add_text("v0.2 | Dev Build", color=ADDITIONAL_BLACK)
     
-    dpg.add_separator()
     dpg.add_spacer(height=5)
 
     # ----- ВКЛАДКИ -----
@@ -57,7 +60,6 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
             dpg.add_checkbox(label="Pixel Trigger Bot", enabled=False)
             dpg.add_checkbox(label="AutoPistol", enabled=False)
             dpg.add_checkbox(label="Mini-Recoil Control", callback=toggle_mrc)
-            # FIXME: add slider for "Mini-Recoil Control" strength
 
         # Вкладка 2: Anti-Aim
         with dpg.tab(label="Anti-Aim"):
@@ -74,7 +76,7 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
 
                 # Рамка вокруг настроек (Child Window) для красоты
                 with dpg.child_window(height=105, border=True):
-                    dpg.add_text("Bhop Settings", color=(163, 102, 255))
+                    dpg.add_text("Bhop Settings", color=SOFT_PURPLE)
                     dpg.add_checkbox(label="Randomize Jump Offset", callback=toggle_random_offset)
                     dpg.add_slider_float(
                         label="Jump Delay (sec)",
@@ -84,15 +86,15 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
                         callback=update_bhop_delay,
                         format="%.3f"
                     )
-                    dpg.add_text("Lower delay = Faster spam. Hold SPACE to activate in-game.", color=(150, 150, 150))
+                    dpg.add_text("Lower delay = Faster spam. Hold SPACE to activate in-game.", color=ADDITIONAL_BLACK)
 
-            dpg.add_checkbox(label="Anti-AFK", enabled=False)
             dpg.add_checkbox(label="Snap Tap", enabled=False)
 
         # Вкладка 4: Misc
         with dpg.tab(label="Misc"):
             dpg.add_spacer(height=10)
             dpg.add_checkbox(label="Secured Mode", enabled=False)
+            dpg.add_checkbox(label="Anti-AFK", enabled=False)
             dpg.add_checkbox(label="Fast-Zoom", enabled=False)
             dpg.add_checkbox(label="Zoom to Mouse", enabled=False)
             dpg.add_button(label="PANIC UNLOAD", width=120)
@@ -105,6 +107,35 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
             dpg.add_text("Menu Key: INSERT")
             dpg.add_text("Panic Key: DELETE")
 
+# -------------------------- ТЕМА И СТИЛИ --------------------------
+with dpg.theme() as global_theme:
+    with dpg.theme_component(dpg.mvAll):
+        # ----- ОКНО -----
+        dpg.add_theme_style(dpg.mvStyleVar_WindowRounding, 6)  # Закругление углов окна
+        dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 4)   # Закругление чекбоксов и полей
+        dpg.add_theme_color(dpg.mvThemeCol_WindowBg, (20, 20, 20, 255))  # Фон окна
+
+        # ----- ЧЕКБОКСЫ -----
+        # Цвет галочки (когда включено)
+        dpg.add_theme_color(dpg.mvThemeCol_CheckMark, DEEP_PURPLE)
+        # Фон чекбокса
+        dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (60, 60, 60, 255))
+        dpg.add_theme_color(dpg.mvThemeCol_FrameBgHovered, (80, 80, 80, 255))
+        dpg.add_theme_color(dpg.mvThemeCol_FrameBgActive, (90, 90, 90, 255))
+
+        # ----- ВКЛАДКИ -----
+        # Активная вкладка (на которой мы сейчас) - Зеленая, но потемнее
+        dpg.add_theme_color(dpg.mvThemeCol_TabActive, DEEP_PURPLE)
+        # Обычная вкладка (неактивная)
+        dpg.add_theme_color(dpg.mvThemeCol_Tab, (54, 0, 102, 255))
+        # При наведении на вкладку
+        dpg.add_theme_color(dpg.mvThemeCol_TabHovered, ACTIVE_PURPLE)
+        
+        # ----- СЛАЙДЕРЫ -----
+        dpg.add_theme_color(dpg.mvThemeCol_SliderGrab, DEEP_PURPLE)
+        dpg.add_theme_color(dpg.mvThemeCol_SliderGrabActive, ACTIVE_PURPLE)
+
+dpg.bind_theme(global_theme)
 
 # -------------------------- ЗАПУСК --------------------------
 dpg.create_viewport(title='ghosthand', width=515, height=390, resizable=False, decorated=True)
