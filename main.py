@@ -29,8 +29,20 @@ def toggle_random_offset(sender, app_data):
 # ----- mrc -----
 def toggle_mrc(sender, app_data):
     mrc_instance.enabled = app_data
+    dpg.configure_item("Mini-Recoil Control Settings", show=app_data)
     status = "ON" if app_data else "OFF"
     print(f"[debug-UI] mrc is {status}")
+
+
+def update_mrc_strength(sender, app_data):
+    mrc_instance.strength = app_data
+    print(f"[debug-UI] mrc strength set to {app_data:.4f}")
+
+
+def update_mrc_speed(sender, app_data):
+    mrc_instance.speed = app_data
+    print(f"[debug-UI] mrc speed set to {app_data:.4f}")
+
 
 DEEP_PURPLE = (139, 0, 255, 255)
 SOFT_PURPLE = (163, 102, 255, 255)
@@ -56,10 +68,30 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
         with dpg.tab(label="Aim Assist"):
             dpg.add_spacer(height=10)
             dpg.add_checkbox(label="AimPull", enabled=False)
-            dpg.add_checkbox(label="Smooth", enabled=False)
             dpg.add_checkbox(label="Pixel Trigger Bot", enabled=False)
             dpg.add_checkbox(label="AutoPistol", enabled=False)
             dpg.add_checkbox(label="Mini-Recoil Control", callback=toggle_mrc)
+
+            with dpg.group(tag="Mini-Recoil Control Settings", show=False):
+                dpg.add_spacer(height=5)
+
+                with dpg.child_window(height=105, border=True):
+                    dpg.add_text("MRC Settings", color=SOFT_PURPLE)
+                    dpg.add_slider_int(
+                        label="Strength",
+                        default_value=mrc_instance.strength,
+                        min_value=1,
+                        max_value=6,
+                        callback=update_mrc_strength
+                    )
+                    dpg.add_slider_float(
+                        label="Speed",
+                        default_value=mrc_instance.speed,
+                        min_value=0.005,
+                        max_value=0.1,
+                        callback=update_mrc_speed,
+                        format="%.3f"
+                    )
 
         # Вкладка 2: Anti-Aim
         with dpg.tab(label="Anti-Aim"):
@@ -74,7 +106,6 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
             with dpg.group(tag="bhop_settings_group", show=False):
                 dpg.add_spacer(height=5)
 
-                # Рамка вокруг настроек (Child Window) для красоты
                 with dpg.child_window(height=105, border=True):
                     dpg.add_text("Bhop Settings", color=SOFT_PURPLE)
                     dpg.add_checkbox(label="Randomize Jump Offset", callback=toggle_random_offset)

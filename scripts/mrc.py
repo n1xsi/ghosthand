@@ -7,8 +7,9 @@ class MiniRecoilCore:
     def __init__(self):
         self.running = False  # Глобальный переключатель (вкл/выкл поток)
         self.enabled = False  # Переключатель функционала (для чекбокса в меню)
-        self.strenght = 0.01  # Сила стягивания вниз (ожидание перемещения мыши)
-        
+        self.strength = 2  # Сила стягивания вниз
+        self.speed = 0.01  # Ожидание перед следующим перемещением мыши
+
         self.left_button_pressed = False  # Флаг для проверки удержания левой кнопки
 
     def move_mouse(self, dx, dy):
@@ -22,9 +23,9 @@ class MiniRecoilCore:
                 self.left_button_pressed = False
             
             if self.left_button_pressed:
-                self.move_mouse(0, 2)
+                self.move_mouse(0, self.strength)
 
-            time.sleep(self.strenght)
+            time.sleep(self.speed)
 
     def is_left_button_pressed(self):
         return ctypes.windll.user32.GetAsyncKeyState(0x01) != 0
