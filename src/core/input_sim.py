@@ -48,13 +48,29 @@ class Input(ctypes.Structure):
     _fields_ = [("type", ctypes.c_ulong),
                 ("ii", Input_I)]
 
+# Структура координат курсора
+class POINT(ctypes.Structure):
+    _fields_ = [("x", ctypes.c_long), ("y", ctypes.c_long)]
+
 
 # DirectInput Scan Codes
 INPUT_MOUSE          = 0
 MOUSEEVENTF_LEFTDOWN = 0x0002
 MOUSEEVENTF_LEFTUP   = 0x0004
+WH_MOUSE_LL    = 14
+WM_LBUTTONDOWN = 0x0201
+WM_LBUTTONUP   = 0x0202
 DIK_SPACE = 0x39  # Скан-код пробела
 VK_SPACE = 0x20   # Код виртуальной клавиши для проверки удержания (VK_SPACE для GetAsyncKeyState)
+VK_LBUTTON = 0x01
+
+# Тип для callback-функции хука
+HOOKPROC = ctypes.WINFUNCTYPE(
+    ctypes.c_long,
+    ctypes.c_int,
+    ctypes.wintypes.WPARAM,
+    ctypes.wintypes.LPARAM
+)
 
 def PressKey(hexKeyCode):
     extra = ctypes.c_ulong(0)
@@ -82,3 +98,24 @@ def is_key_pressed(vk_code):
     # 0x8000 - это маска "нажата в данный момент"
     return (ctypes.windll.user32.GetAsyncKeyState(vk_code) & 0x8000) != 0
 
+
+# --- Mouse Constants ---
+MOUSEEVENTF_LEFTDOWN = 0x0002
+MOUSEEVENTF_LEFTUP = 0x0004
+
+def MouseLeftClick(delay=0.01):
+    """Имитирует нажатие левой кнопки мыши"""
+    extra = ctypes.c_ulong(0)
+    ii_ = Input_I()
+    
+    # Отправляем DOWN
+    ii_.mi = MouseInput(0, 0, 0, MOUSEEVENTF_LEFTDOWN, 0, ctypes.pointer(extra))
+    x = Input(ctypes.c_ulong(INPUT_MOUSE), ii_)
+    SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
+    
+    time.sleep(delay)
+    
+    # Отправляем UP
+    ii_.mi = MouseInput(0, 0, 0, MOUSEEVENTF_LEFTUP, 0, ctypes.pointer(extra))
+    x = Input(ctypes.c_ulong(INPUT_MOUSE), ii_)
+    SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
