@@ -54,7 +54,7 @@ def toggle_autopistol(sender, app_data):
 
 # ---------------------------------------------------------------
 
-
+# Переменные цветов
 DEEP_PURPLE = (139, 0, 255, 255)
 SOFT_PURPLE = (163, 102, 255, 255)
 ACTIVE_PURPLE = (184, 102, 255, 255)
@@ -68,7 +68,7 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
     # Заголовок
     with dpg.group(horizontal=True):
         dpg.add_text("GHOSTHAND", color=DEEP_PURPLE, pos=(150, 0))
-        dpg.add_text("v0.2 | Dev Build", color=ADDITIONAL_BLACK)
+        dpg.add_text("v0.3 | Dev Build", color=ADDITIONAL_BLACK)
     
     dpg.add_spacer(height=5)
 
@@ -146,8 +146,10 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
         # Вкладка 5: Keybinds
         with dpg.tab(label="Keybinds"):
             dpg.add_spacer(height=10)
-            dpg.add_text("Menu Key: INSERT")
-            dpg.add_text("Panic Key: DELETE")
+            dpg.add_text("AutoPistol: mouse4 (hold)")
+            dpg.add_text("Mini-Recoil Control: mouse1 (hold)")
+            dpg.add_spacer(height=10)
+            dpg.add_text("Bhop: space (hold)")
 
 # -------------------------- ТЕМА И СТИЛИ --------------------------
 with dpg.theme() as global_theme:
