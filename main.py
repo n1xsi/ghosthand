@@ -1,4 +1,5 @@
 from scripts.autopistol import autopistol_instance
+from scripts.antiafk import antiafk_instance
 from scripts.bunnyhop import bhop_instance
 from scripts.mrc import mrc_instance
 
@@ -52,6 +53,12 @@ def toggle_autopistol(sender, app_data):
     status = "ON" if app_data else "OFF"
     print(f"[debug-UI] autopistol is {status}")
 
+# ----- anti-afk -----
+def toggle_antiafk(sender, app_data):
+    antiafk_instance.enabled = app_data
+    status = "ON" if app_data else "OFF"
+    print(f"[debug-UI] anti-afk is {status}")
+
 # ---------------------------------------------------------------
 
 # Переменные цветов
@@ -103,6 +110,7 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
                         callback=update_mrc_speed,
                         format="%.3f"
                     )
+                    dpg.add_text("Hold LMB and script will pull the mouse down.", color=ADDITIONAL_BLACK)
 
         # Вкладка 2: Anti-Aim
         with dpg.tab(label="Anti-Aim"):
@@ -136,7 +144,7 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
         with dpg.tab(label="Misc"):
             dpg.add_spacer(height=10)
             dpg.add_checkbox(label="Secured Mode", enabled=False)
-            dpg.add_checkbox(label="Anti-AFK", enabled=False)
+            dpg.add_checkbox(label="Anti-AFK", callback=toggle_antiafk)
             dpg.add_checkbox(label="Fast-Zoom", enabled=False)
             dpg.add_checkbox(label="Zoom to Mouse", enabled=False)
             dpg.add_button(label="PANIC UNLOAD", width=120)
@@ -189,6 +197,7 @@ if __name__ == "__main__":
     bhop_instance.start()
     mrc_instance.start()
     autopistol_instance.start()
+    antiafk_instance.start()
 
     dpg.show_viewport()
     dpg.set_primary_window("Primary Window", True)
