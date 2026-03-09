@@ -1,3 +1,4 @@
+from scripts.pixel_triggerbot import pixel_trigger_instance
 from scripts.autopistol import autopistol_instance
 from scripts.antiafk import antiafk_instance
 from scripts.bunnyhop import bhop_instance
@@ -18,7 +19,6 @@ def toggle_bhop(sender, app_data):
     status = "ON" if app_data else "OFF"
     print(f"[debug-UI] bhop is {status}")
 
-
 def update_bhop_delay(sender, app_data):
     bhop_instance.delay = app_data
     print(f"[debug-UI] bhop delay set to {app_data:.4f}s")
@@ -32,7 +32,7 @@ def toggle_random_offset(sender, app_data):
 # ----- mrc -----
 def toggle_mrc(sender, app_data):
     mrc_instance.enabled = app_data
-    dpg.configure_item("Mini-Recoil Control Settings", show=app_data)
+    dpg.configure_item("mrc_settings_group", show=app_data)
     status = "ON" if app_data else "OFF"
     print(f"[debug-UI] mrc is {status}")
 
@@ -46,7 +46,6 @@ def update_mrc_speed(sender, app_data):
     mrc_instance.speed = app_data
     print(f"[debug-UI] mrc speed set to {app_data:.4f}")
 
-
 # ----- autopistol -----
 def toggle_autopistol(sender, app_data):
     autopistol_instance.enabled = app_data
@@ -58,6 +57,16 @@ def toggle_antiafk(sender, app_data):
     antiafk_instance.enabled = app_data
     status = "ON" if app_data else "OFF"
     print(f"[debug-UI] anti-afk is {status}")
+
+# ----- trigger -----
+def toggle_pixel_trigger(sender, app_data):
+    pixel_trigger_instance.enabled = app_data
+    dpg.configure_item("trigger_settings_group", show=app_data)
+    status = "ON" if app_data else "OFF"
+    print(f"[debug-UI] trigger is {status}")
+
+def update_pixel_trigger_threshold(sender, app_data):
+    pixel_trigger_instance.threshold = app_data
 
 # ---------------------------------------------------------------
 
@@ -86,11 +95,26 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
         with dpg.tab(label="Aim Assist"):
             dpg.add_spacer(height=10)
             dpg.add_checkbox(label="AimPull", enabled=False)
-            dpg.add_checkbox(label="Pixel Trigger Bot", enabled=False)
+            dpg.add_checkbox(label="Pixel Trigger Bot", callback=toggle_pixel_trigger)
+
+            with dpg.group(tag="trigger_settings_group", show=False):
+                dpg.add_spacer(height=5)
+
+                with dpg.child_window(height=95, border=True):
+                    dpg.add_text("Trigger Settings", color=SOFT_PURPLE)
+                    dpg.add_slider_int(
+                        label="Color Threshold", 
+                        default_value=pixel_trigger_instance.threshold, 
+                        min_value=1,
+                        max_value=100,
+                        callback=update_pixel_trigger_threshold
+                    )
+                    dpg.add_text("Hold L-ALT to scan.\nThe smaller the threshold, the more sensitive the trigger.", color=ADDITIONAL_BLACK)
+
             dpg.add_checkbox(label="AutoPistol", callback=toggle_autopistol)
             dpg.add_checkbox(label="Mini-Recoil Control", callback=toggle_mrc)
 
-            with dpg.group(tag="Mini-Recoil Control Settings", show=False):
+            with dpg.group(tag="mrc_settings_group", show=False):
                 dpg.add_spacer(height=5)
 
                 with dpg.child_window(height=105, border=True):
@@ -156,6 +180,7 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
             dpg.add_spacer(height=10)
             dpg.add_text("AutoPistol: mouse4 (hold)")
             dpg.add_text("Mini-Recoil Control: mouse1 (hold)")
+            dpg.add_text("Pixel Trigger Bot: alt (hold)")
             dpg.add_spacer(height=10)
             dpg.add_text("Bhop: space (hold)")
 
@@ -198,6 +223,7 @@ if __name__ == "__main__":
     mrc_instance.start()
     autopistol_instance.start()
     antiafk_instance.start()
+    pixel_trigger_instance.start()
 
     dpg.show_viewport()
     dpg.set_primary_window("Primary Window", True)
