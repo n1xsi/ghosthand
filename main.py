@@ -1,5 +1,6 @@
 from scripts.pixel_triggerbot import pixel_trigger_instance
 from scripts.autopistol import autopistol_instance
+from scripts.snaptap import snap_tap_instance
 from scripts.antiafk import antiafk_instance
 from scripts.bunnyhop import bhop_instance
 from scripts.mrc import mrc_instance
@@ -68,6 +69,12 @@ def toggle_pixel_trigger(sender, app_data):
 def update_pixel_trigger_threshold(sender, app_data):
     pixel_trigger_instance.threshold = app_data
 
+# ----- snap tap -----
+def toggle_snap_tap(sender, app_data):
+    snap_tap_instance.enabled = app_data
+    status = "ON" if app_data else "OFF"
+    print(f"[debug-UI] snap tap is {status}")
+
 # ---------------------------------------------------------------
 
 # Переменные цветов
@@ -84,7 +91,7 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
     # Заголовок
     with dpg.group(horizontal=True):
         dpg.add_text("GHOSTHAND", color=DEEP_PURPLE, pos=(150, 0))
-        dpg.add_text("v0.3 | Dev Build", color=ADDITIONAL_BLACK)
+        dpg.add_text("v0.5 | Dev Build", color=ADDITIONAL_BLACK)
     
     dpg.add_spacer(height=5)
 
@@ -162,7 +169,7 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
                     )
                     dpg.add_text("Lower delay = Faster spam. Hold SPACE to activate in-game.", color=ADDITIONAL_BLACK)
 
-            dpg.add_checkbox(label="Snap Tap", enabled=False)
+            dpg.add_checkbox(label="Snap Tap", callback=toggle_snap_tap)
 
         # Вкладка 4: Misc
         with dpg.tab(label="Misc"):
@@ -224,6 +231,7 @@ if __name__ == "__main__":
     autopistol_instance.start()
     antiafk_instance.start()
     pixel_trigger_instance.start()
+    snap_tap_instance.start()
 
     dpg.show_viewport()
     dpg.set_primary_window("Primary Window", True)
