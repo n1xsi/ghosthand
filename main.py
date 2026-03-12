@@ -2,6 +2,7 @@ from scripts.pixel_triggerbot import pixel_trigger_instance
 from scripts.autopistol import autopistol_instance
 from scripts.snaptap import snap_tap_instance
 from scripts.antiafk import antiafk_instance
+from scripts.aimpull import aimpull_instance
 from scripts.bunnyhop import bhop_instance
 from scripts.mrc import mrc_instance
 
@@ -9,26 +10,33 @@ import dearpygui.dearpygui as dpg
 
 # -------------------------- CALLBACKS --------------------------
 
-# ----- bhop -----
-def toggle_bhop(sender, app_data):
-    """
-    sender: кто вызвал функцию (чекбокс)
-    app_data: значение чекбокса (True/False)
-    """
-    bhop_instance.enabled = app_data
-    dpg.configure_item("bhop_settings_group", show=app_data)
+# ----- aimpull -----
+def toggle_aimpull(sender, app_data):
+    aimpull_instance.enabled = app_data
+    dpg.configure_item("aimpull_settings_group", show=app_data)
     status = "ON" if app_data else "OFF"
-    print(f"[debug-UI] bhop is {status}")
-
-def update_bhop_delay(sender, app_data):
-    bhop_instance.delay = app_data
-    print(f"[debug-UI] bhop delay set to {app_data:.4f}s")
+    print(f"[debug-UI] AimPull is {status}")
 
 
-def toggle_random_offset(sender, app_data):
-    bhop_instance.random_offset = app_data
+def update_aimpull_smooth(sender, app_data):
+    aimpull_instance.smooth = app_data
+
+# ----- autopistol -----
+def toggle_autopistol(sender, app_data):
+    autopistol_instance.enabled = app_data
     status = "ON" if app_data else "OFF"
-    print(f"[debug-UI] bhop random offset is {status}")
+    print(f"[debug-UI] autopistol is {status}")
+
+# ----- trigger -----
+def toggle_pixel_trigger(sender, app_data):
+    pixel_trigger_instance.enabled = app_data
+    dpg.configure_item("trigger_settings_group", show=app_data)
+    status = "ON" if app_data else "OFF"
+    print(f"[debug-UI] trigger is {status}")
+
+
+def update_pixel_trigger_threshold(sender, app_data):
+    pixel_trigger_instance.threshold = app_data
 
 # ----- mrc -----
 def toggle_mrc(sender, app_data):
@@ -47,33 +55,35 @@ def update_mrc_speed(sender, app_data):
     mrc_instance.speed = app_data
     print(f"[debug-UI] mrc speed set to {app_data:.4f}")
 
-# ----- autopistol -----
-def toggle_autopistol(sender, app_data):
-    autopistol_instance.enabled = app_data
+# ----- bhop -----
+def toggle_bhop(sender, app_data):
+    bhop_instance.enabled = app_data
+    dpg.configure_item("bhop_settings_group", show=app_data)
     status = "ON" if app_data else "OFF"
-    print(f"[debug-UI] autopistol is {status}")
+    print(f"[debug-UI] bhop is {status}")
 
-# ----- anti-afk -----
-def toggle_antiafk(sender, app_data):
-    antiafk_instance.enabled = app_data
+
+def update_bhop_delay(sender, app_data):
+    bhop_instance.delay = app_data
+    print(f"[debug-UI] bhop delay set to {app_data:.4f}s")
+
+
+def toggle_random_offset(sender, app_data):
+    bhop_instance.random_offset = app_data
     status = "ON" if app_data else "OFF"
-    print(f"[debug-UI] anti-afk is {status}")
-
-# ----- trigger -----
-def toggle_pixel_trigger(sender, app_data):
-    pixel_trigger_instance.enabled = app_data
-    dpg.configure_item("trigger_settings_group", show=app_data)
-    status = "ON" if app_data else "OFF"
-    print(f"[debug-UI] trigger is {status}")
-
-def update_pixel_trigger_threshold(sender, app_data):
-    pixel_trigger_instance.threshold = app_data
+    print(f"[debug-UI] bhop random offset is {status}")
 
 # ----- snap tap -----
 def toggle_snap_tap(sender, app_data):
     snap_tap_instance.enabled = app_data
     status = "ON" if app_data else "OFF"
     print(f"[debug-UI] snap tap is {status}")
+
+# ----- anti-afk -----
+def toggle_antiafk(sender, app_data):
+    antiafk_instance.enabled = app_data
+    status = "ON" if app_data else "OFF"
+    print(f"[debug-UI] anti-afk is {status}")
 
 # ---------------------------------------------------------------
 
@@ -91,7 +101,7 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
     # Заголовок
     with dpg.group(horizontal=True):
         dpg.add_text("GHOSTHAND", color=DEEP_PURPLE, pos=(150, 0))
-        dpg.add_text("v0.5 | Dev Build", color=ADDITIONAL_BLACK)
+        dpg.add_text("v0.6 | Dev Build", color=ADDITIONAL_BLACK)
     
     dpg.add_spacer(height=5)
 
@@ -101,7 +111,22 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
         # Вкладка 1: Aim Assist
         with dpg.tab(label="Aim Assist"):
             dpg.add_spacer(height=10)
-            dpg.add_checkbox(label="AimPull", enabled=False)
+            dpg.add_checkbox(label="AimPull", callback=toggle_aimpull)
+
+            with dpg.group(tag="aimpull_settings_group", show=False):
+                dpg.add_spacer(height=5)
+                with dpg.child_window(height=85, border=True):
+                    dpg.add_text("Aim Settings", color=SOFT_PURPLE)
+                    dpg.add_slider_float(
+                        label="Smooth", 
+                        default_value=aimpull_instance.smooth,
+                        min_value=1.0, 
+                        max_value=10.0, 
+                        callback=aimpull_instance,
+                        format="%.1f"
+                    )
+                    dpg.add_text("Higher value = Slower, more legit.", color=ADDITIONAL_BLACK)
+
             dpg.add_checkbox(label="Pixel Trigger Bot", callback=toggle_pixel_trigger)
 
             with dpg.group(tag="trigger_settings_group", show=False):
@@ -232,6 +257,7 @@ if __name__ == "__main__":
     antiafk_instance.start()
     pixel_trigger_instance.start()
     snap_tap_instance.start()
+    aimpull_instance.start()
 
     dpg.show_viewport()
     dpg.set_primary_window("Primary Window", True)
