@@ -108,12 +108,12 @@ ADDITIONAL_BLACK = (150, 150, 150, 200)
 # -------------------------- GUI SETUP --------------------------
 dpg.create_context()  # Инициализация DearPyGui
 
-with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_move=True, no_collapse=True, no_title_bar=True):
+with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_move=True, no_collapse=True, no_title_bar=True):
     
     # Заголовок
     with dpg.group(horizontal=True):
         dpg.add_text("GHOSTHAND", color=DEEP_PURPLE, pos=(150, 0))
-        dpg.add_text("v0.6 | Dev Build", color=ADDITIONAL_BLACK)
+        dpg.add_text("v0.7 | Dev Build", color=ADDITIONAL_BLACK)
     
     dpg.add_spacer(height=5)
 
@@ -228,18 +228,21 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
             dpg.add_checkbox(label="Anti-AFK", callback=toggle_antiafk)
             dpg.add_checkbox(label="Fast-Zoom", enabled=False)
             dpg.add_checkbox(label="Zoom to Mouse", enabled=False)
-            dpg.add_button(label="PANIC UNLOAD", width=120)
+            dpg.add_spacer(height=5)
+            dpg.add_button(label="PANIC UNLOAD", width=150)
             # configs system
             # theme system
 
         # Вкладка 5: Keybinds
         with dpg.tab(label="Keybinds"):
             dpg.add_spacer(height=10)
+            dpg.add_text("AimPull: mouse1 (click/hold)")
+            dpg.add_text("Pixel Trigger Bot: alt (hold)")
             dpg.add_text("AutoPistol: mouse4 (hold)")
             dpg.add_text("Mini-Recoil Control: mouse1 (hold)")
-            dpg.add_text("Pixel Trigger Bot: alt (hold)")
             dpg.add_spacer(height=10)
             dpg.add_text("Bhop: space (hold)")
+            dpg.add_text("Snap Tap: A/D (hold)")
 
 # -------------------------- ТЕМА И СТИЛИ --------------------------
 with dpg.theme() as global_theme:
@@ -272,7 +275,8 @@ with dpg.theme() as global_theme:
 # -------------------------- ЗАПУСК --------------------------
 if __name__ == "__main__":
     dpg.bind_theme(global_theme)
-    dpg.create_viewport(title='ghosthand', width=515, height=390, resizable=False, decorated=True)
+    dpg.set_global_font_scale(1.5)  # Увеличение всего UI в 1.5 раза
+    dpg.create_viewport(title='ghosthand', width=600, height=420, resizable=False, decorated=True)
     dpg.setup_dearpygui()
 
     # ----- Запуск скриптов -----
