@@ -127,7 +127,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
             dpg.add_checkbox(label="AimPull", callback=toggle_aimpull)
             with dpg.group(tag="aimpull_settings_group", show=False):
                 dpg.add_spacer(height=5)
-                with dpg.child_window(height=105, border=True):
+                with dpg.child_window(height=125, border=True):
                     dpg.add_text("AimPull Settings", color=SOFT_PURPLE)
                     dpg.add_slider_float(
                         label="Smooth", 
@@ -150,7 +150,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
             with dpg.group(tag="trigger_settings_group", show=False):
                 dpg.add_spacer(height=5)
 
-                with dpg.child_window(height=115, border=True):
+                with dpg.child_window(height=140, border=True):
                     dpg.add_text("Trigger Settings", color=SOFT_PURPLE)
                     dpg.add_slider_float(
                         label="Reaction Delay",
@@ -166,7 +166,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
                         max_value=100,
                         callback=update_pixel_trigger_threshold
                     )
-                    dpg.add_text("Hold L-ALT to scan.\nThe smaller the threshold, the more sensitive the trigger.", color=ADDITIONAL_BLACK)
+                    dpg.add_text("Hold L-ALT to scan.\nSmaller threshold = more sensitive trigger.", color=ADDITIONAL_BLACK)
 
             dpg.add_checkbox(label="AutoPistol", callback=toggle_autopistol)
 
@@ -174,7 +174,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
             with dpg.group(tag="mrc_settings_group", show=False):
                 dpg.add_spacer(height=5)
 
-                with dpg.child_window(height=105, border=True):
+                with dpg.child_window(height=125, border=True):
                     dpg.add_text("MRC Settings", color=SOFT_PURPLE)
                     dpg.add_slider_int(
                         label="Strength",
@@ -206,7 +206,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
             with dpg.group(tag="bhop_settings_group", show=False):
                 dpg.add_spacer(height=5)
 
-                with dpg.child_window(height=105, border=True):
+                with dpg.child_window(height=125, border=True):
                     dpg.add_text("Bhop Settings", color=SOFT_PURPLE)
                     dpg.add_checkbox(label="Randomize Jump Offset", callback=toggle_random_offset)
                     dpg.add_slider_float(
@@ -217,7 +217,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
                         callback=update_bhop_delay,
                         format="%.3f"
                     )
-                    dpg.add_text("Lower delay = Faster spam. Hold SPACE to activate in-game.", color=ADDITIONAL_BLACK)
+                    dpg.add_text("Lower delay = Faster spam. Hold SPACE to bhop.", color=ADDITIONAL_BLACK)
 
             dpg.add_checkbox(label="Snap Tap", callback=toggle_snap_tap)
 
@@ -275,7 +275,7 @@ with dpg.theme() as global_theme:
 # -------------------------- ЗАПУСК --------------------------
 if __name__ == "__main__":
     dpg.bind_theme(global_theme)
-    dpg.set_global_font_scale(1.5)  # Увеличение всего UI в 1.5 раза
+    dpg.set_global_font_scale(1.4)  # Увеличение всего UI в 1.4 раза
     dpg.create_viewport(title='ghosthand', width=600, height=420, resizable=False, decorated=True)
     dpg.setup_dearpygui()
 
