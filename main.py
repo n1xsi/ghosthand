@@ -41,8 +41,14 @@ def toggle_pixel_trigger(sender, app_data):
     print(f"[debug-UI] trigger is {status}")
 
 
+def update_pixel_trigger_reaction_delay(sender, app_data):
+    pixel_trigger_instance.reaction_delay = app_data
+    print(f"[debug-UI] pixel trigger reaction delay set to {app_data:.4f}s")
+
+
 def update_pixel_trigger_threshold(sender, app_data):
     pixel_trigger_instance.threshold = app_data
+    print(f"[debug-UI] pixel trigger threshold set to {app_data}")
 
 # ----- mrc -----
 def toggle_mrc(sender, app_data):
@@ -144,8 +150,15 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
             with dpg.group(tag="trigger_settings_group", show=False):
                 dpg.add_spacer(height=5)
 
-                with dpg.child_window(height=95, border=True):
+                with dpg.child_window(height=115, border=True):
                     dpg.add_text("Trigger Settings", color=SOFT_PURPLE)
+                    dpg.add_slider_float(
+                        label="Reaction Delay",
+                        default_value=pixel_trigger_instance.reaction_delay,
+                        min_value=0.005,
+                        max_value=0.2,
+                        callback=update_pixel_trigger_reaction_delay
+                    )
                     dpg.add_slider_int(
                         label="Color Threshold", 
                         default_value=pixel_trigger_instance.threshold, 

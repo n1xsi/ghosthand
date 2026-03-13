@@ -25,9 +25,9 @@ class TriggerBotCore:
         self.running = False
         self.enabled = False
 
-        self.threshold = 20      # Допуск изменения цвета
-        # Задержка между выстрелами (чтобы не стрелять 1000 раз в секунду)
-        self.shoot_delay = 0.15
+        self.threshold = 20  # Допуск изменения цвета
+        self.reaction_delay = 0.01  # Задержка перед выстрелом
+        self.shoot_delay = 0.15  # Задержка между выстрелами
 
     def start(self):
         self.running = True
@@ -79,15 +79,15 @@ class TriggerBotCore:
 
                     # Если дистанция цвета больше порога - SHOOT!
                     if color_distance > current_threshold:
-                        MouseLeftClick(delay=0.01)
+                        time.sleep(self.reaction_delay)  # Задержка перед выстрелом
+                        MouseLeftClick(delay=0.01)  # Зажатие левой кнопки мыши в течение 0.01 сек
 
                         # Ожидание перед следующим кликом, чтобы не спамить
                         time.sleep(self.shoot_delay)
 
                         # После выстрела обновление базового цвета (опционально, но по идее помогает при отдаче)
                         user32.GetCursorPos(ctypes.byref(pt))
-                        ref_r, ref_g, ref_b = get_color(
-                            hdc, pt.x + 2, pt.y + 2)
+                        ref_r, ref_g, ref_b = get_color(hdc, pt.x + 2, pt.y + 2)
 
             # КЛАВИША ОТПУЩЕНА
             else:
