@@ -18,8 +18,14 @@ def toggle_aimpull(sender, app_data):
     print(f"[debug-UI] AimPull is {status}")
 
 
-def update_aimpull_smooth(sender, app_data):
+def update_smooth(sender, app_data):
     aimpull_instance.smooth = app_data
+    print(f"[debug-UI] AimPull smooth set to {app_data:.1f}")
+
+
+def update_fov(sender, app_data):
+    aimpull_instance.fov = app_data
+    print(f"[debug-UI] AimPull FOV set to {app_data}")
 
 # ----- autopistol -----
 def toggle_autopistol(sender, app_data):
@@ -111,24 +117,30 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
         # Вкладка 1: Aim Assist
         with dpg.tab(label="Aim Assist"):
             dpg.add_spacer(height=10)
-            dpg.add_checkbox(label="AimPull", callback=toggle_aimpull)
 
+            dpg.add_checkbox(label="AimPull", callback=toggle_aimpull)
             with dpg.group(tag="aimpull_settings_group", show=False):
                 dpg.add_spacer(height=5)
-                with dpg.child_window(height=85, border=True):
-                    dpg.add_text("Aim Settings", color=SOFT_PURPLE)
+                with dpg.child_window(height=105, border=True):
+                    dpg.add_text("AimPull Settings", color=SOFT_PURPLE)
                     dpg.add_slider_float(
                         label="Smooth", 
                         default_value=aimpull_instance.smooth,
-                        min_value=1.0, 
-                        max_value=10.0, 
-                        callback=aimpull_instance,
+                        min_value=0.1,
+                        max_value=10.0,
+                        callback=update_smooth,
                         format="%.1f"
                     )
-                    dpg.add_text("Higher value = Slower, more legit.", color=ADDITIONAL_BLACK)
+                    dpg.add_slider_int(
+                        label="FOV",
+                        default_value=aimpull_instance.fov,
+                        min_value=10,
+                        max_value=200,
+                        callback=update_fov
+                    )
+                    dpg.add_text("Works while holding Left-Click", color=ADDITIONAL_BLACK)
 
             dpg.add_checkbox(label="Pixel Trigger Bot", callback=toggle_pixel_trigger)
-
             with dpg.group(tag="trigger_settings_group", show=False):
                 dpg.add_spacer(height=5)
 
@@ -144,8 +156,8 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
                     dpg.add_text("Hold L-ALT to scan.\nThe smaller the threshold, the more sensitive the trigger.", color=ADDITIONAL_BLACK)
 
             dpg.add_checkbox(label="AutoPistol", callback=toggle_autopistol)
-            dpg.add_checkbox(label="Mini-Recoil Control", callback=toggle_mrc)
 
+            dpg.add_checkbox(label="Mini-Recoil Control", callback=toggle_mrc)
             with dpg.group(tag="mrc_settings_group", show=False):
                 dpg.add_spacer(height=5)
 
@@ -176,8 +188,8 @@ with dpg.window(tag="Primary Window", width=500, height=350, no_resize=True, no_
         # Вкладка 3: Movement
         with dpg.tab(label="Movement"):
             dpg.add_spacer(height=10)
-            dpg.add_checkbox(label="Bhop", callback=toggle_bhop)
 
+            dpg.add_checkbox(label="Bhop", callback=toggle_bhop)
             with dpg.group(tag="bhop_settings_group", show=False):
                 dpg.add_spacer(height=5)
 
