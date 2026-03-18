@@ -8,14 +8,20 @@ from scripts.mrc import mrc_instance
 
 import dearpygui.dearpygui as dpg
 
+
+# Переменные цветов
+DEEP_PURPLE = (139, 0, 255, 255)
+SOFT_PURPLE = (163, 102, 255, 255)
+ACTIVE_PURPLE = (184, 102, 255, 255)
+ADDITIONAL_BLACK = (150, 150, 150, 200)
+
 # -------------------------- CALLBACKS --------------------------
 
 # ----- aimpull -----
 def toggle_aimpull(sender, app_data):
     aimpull_instance.enabled = app_data
     dpg.configure_item("aimpull_settings_group", show=app_data)
-    status = "ON" if app_data else "OFF"
-    print(f"[debug-UI] AimPull is {status}")
+    print(f"[debug-UI] AimPull is {"ON" if app_data else "OFF"}")
 
 
 def update_smooth(sender, app_data):
@@ -30,15 +36,13 @@ def update_fov(sender, app_data):
 # ----- autopistol -----
 def toggle_autopistol(sender, app_data):
     autopistol_instance.enabled = app_data
-    status = "ON" if app_data else "OFF"
-    print(f"[debug-UI] autopistol is {status}")
+    print(f"[debug-UI] autopistol is {"ON" if app_data else "OFF"}")
 
 # ----- trigger -----
 def toggle_pixel_trigger(sender, app_data):
     pixel_trigger_instance.enabled = app_data
     dpg.configure_item("trigger_settings_group", show=app_data)
-    status = "ON" if app_data else "OFF"
-    print(f"[debug-UI] trigger is {status}")
+    print(f"[debug-UI] trigger is {"ON" if app_data else "OFF"}")
 
 
 def update_pixel_trigger_reaction_delay(sender, app_data):
@@ -54,8 +58,7 @@ def update_pixel_trigger_threshold(sender, app_data):
 def toggle_mrc(sender, app_data):
     mrc_instance.enabled = app_data
     dpg.configure_item("mrc_settings_group", show=app_data)
-    status = "ON" if app_data else "OFF"
-    print(f"[debug-UI] mrc is {status}")
+    print(f"[debug-UI] mrc is {"ON" if app_data else "OFF"}")
 
 
 def update_mrc_strength(sender, app_data):
@@ -71,8 +74,7 @@ def update_mrc_speed(sender, app_data):
 def toggle_bhop(sender, app_data):
     bhop_instance.enabled = app_data
     dpg.configure_item("bhop_settings_group", show=app_data)
-    status = "ON" if app_data else "OFF"
-    print(f"[debug-UI] bhop is {status}")
+    print(f"[debug-UI] bhop is {"ON" if app_data else "OFF"}")
 
 
 def update_bhop_delay(sender, app_data):
@@ -82,39 +84,29 @@ def update_bhop_delay(sender, app_data):
 
 def toggle_random_offset(sender, app_data):
     bhop_instance.random_offset = app_data
-    status = "ON" if app_data else "OFF"
-    print(f"[debug-UI] bhop random offset is {status}")
+    print(f"[debug-UI] bhop random offset is {"ON" if app_data else "OFF"}")
 
 # ----- snap tap -----
 def toggle_snap_tap(sender, app_data):
     snap_tap_instance.enabled = app_data
-    status = "ON" if app_data else "OFF"
-    print(f"[debug-UI] snap tap is {status}")
+    print(f"[debug-UI] snap tap is {"ON" if app_data else "OFF"}")
 
 # ----- anti-afk -----
 def toggle_antiafk(sender, app_data):
     antiafk_instance.enabled = app_data
-    status = "ON" if app_data else "OFF"
-    print(f"[debug-UI] anti-afk is {status}")
+    print(f"[debug-UI] anti-afk is {"ON" if app_data else "OFF"}")
 
-# ---------------------------------------------------------------
-
-# Переменные цветов
-DEEP_PURPLE = (139, 0, 255, 255)
-SOFT_PURPLE = (163, 102, 255, 255)
-ACTIVE_PURPLE = (184, 102, 255, 255)
-ADDITIONAL_BLACK = (150, 150, 150, 200)
 
 # -------------------------- GUI SETUP --------------------------
 dpg.create_context()  # Инициализация DearPyGui
 
 with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_move=True, no_collapse=True, no_title_bar=True):
-    
+
     # Заголовок
     with dpg.group(horizontal=True):
         dpg.add_text("GHOSTHAND", color=DEEP_PURPLE, pos=(150, 0))
         dpg.add_text("v0.7 | Dev Build", color=ADDITIONAL_BLACK)
-    
+
     dpg.add_spacer(height=5)
 
     # ----- ВКЛАДКИ -----
@@ -244,6 +236,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
             dpg.add_text("Bhop: space (hold)")
             dpg.add_text("Snap Tap: A/D (hold)")
 
+
 # -------------------------- ТЕМА И СТИЛИ --------------------------
 with dpg.theme() as global_theme:
     with dpg.theme_component(dpg.mvAll):
@@ -267,10 +260,11 @@ with dpg.theme() as global_theme:
         dpg.add_theme_color(dpg.mvThemeCol_Tab, (54, 0, 102, 255))
         # При наведении на вкладку
         dpg.add_theme_color(dpg.mvThemeCol_TabHovered, ACTIVE_PURPLE)
-        
+
         # ----- СЛАЙДЕРЫ -----
         dpg.add_theme_color(dpg.mvThemeCol_SliderGrab, DEEP_PURPLE)
         dpg.add_theme_color(dpg.mvThemeCol_SliderGrabActive, ACTIVE_PURPLE)
+
 
 # -------------------------- ЗАПУСК --------------------------
 if __name__ == "__main__":

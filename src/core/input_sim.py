@@ -1,9 +1,7 @@
 import ctypes
 import time
 
-# ИЗОЛЯЦИЯ
-# Вместо глобального ctypes.windll.user32, создание независимой копии
-# (чтобы правила из snaptap.py сюда не добрались)
+# ИЗОЛЯЦИЯ - вместо глобального "ctypes.windll.user32" создание независимой копии
 user32 = ctypes.WinDLL('user32')
 SendInput = user32.SendInput
 
@@ -50,8 +48,6 @@ class Input(ctypes.Structure):
                 ("ii", Input_I)]
 
 # Структура координат курсора
-
-
 class POINT(ctypes.Structure):
     _fields_ = [("x", ctypes.c_long), ("y", ctypes.c_long)]
 
@@ -100,9 +96,9 @@ def ClickKey(hexKeyCode, delay=0.015):
     time.sleep(delay)
     ReleaseKey(hexKeyCode)
 
-# Функция проверки физического нажатия (для триггера)
+# Функция проверки физического нажатия
 def is_key_pressed(vk_code):
-    # 0x8000 - это маска "нажата в данный момент"
+    # 0x8000 = "нажата в данный момент"
     return (ctypes.windll.user32.GetAsyncKeyState(vk_code) & 0x8000) != 0
 
 
@@ -112,8 +108,7 @@ def MouseLeftClick(delay=0.01):
     ii_ = Input_I()
 
     # Отправляем DOWN
-    ii_.mi = MouseInput(0, 0, 0, MOUSEEVENTF_LEFTDOWN,
-                        0, ctypes.pointer(extra))
+    ii_.mi = MouseInput(0, 0, 0, MOUSEEVENTF_LEFTDOWN, 0, ctypes.pointer(extra))
     x = Input(ctypes.c_ulong(INPUT_MOUSE), ii_)
     SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
@@ -129,7 +124,6 @@ def MouseMove(dx, dy):
     extra = ctypes.c_ulong(0)
     ii_ = Input_I()
 
-    ii_.mi = MouseInput(int(dx), int(
-        dy), 0, MOUSEEVENTF_MOVE, 0, ctypes.pointer(extra))
+    ii_.mi = MouseInput(int(dx), int(dy), 0, MOUSEEVENTF_MOVE, 0, ctypes.pointer(extra))
     x = Input(ctypes.c_ulong(INPUT_MOUSE), ii_)
     SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
