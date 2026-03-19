@@ -2,7 +2,7 @@
 
 **GhostHand** – это автоматизированный софт с набором скриптов для помощи в FPS-играх.
 
-Проект является чисто _external assistaint tool_ для небольшой помощи в игре.
+Проект является чисто _**universal** external assistaint tool_ для небольшой помощи в игре.
 
 > [!Important]
 > Repo still in development. **Everything is in its "raw" form.**
@@ -16,21 +16,28 @@
 
 ## ✅ Функции, реализованные на данный момент
 Имеется уже готовое меню с следующими рабочими функциями:
+* AimPull
 * Autopistol
 * Mini-Recoil Control
 * Pixel Trigger Bot
 * Bhop
 * Anti-AFK
+* Snap Tap
 
 ## 🎮 Совместимость с играми
-GhostHand проверен (пока что) на следующих играх:
+GhostHand проверен и совместим на следующих играх (список будет пополняться):
 
-**Полная совместимость (бОльшая часть функций):**
+**Полная совместимость (бо́льшая часть функций):**
 * hl1
-* cs 1.6 + cs:s + cs:go/cs2
+* cs 1.6 + cs:s + cs:go
+
+**Только в Secured-режиме:**
+* cs2
+* Rust
+* Valorant (vanguard)
 
 ## ⚙ Стек технологий
 * [Python 3.12.12](https://www.python.org/downloads/release/python-31212/)
-* DearPyGui
-* ctypes (WinAPI)
-* threading
+* [DearPyGui](https://dearpygui.readthedocs.io/)
+* [ctypes (WinAPI)](https://docs.python.org/3/library/ctypes.html)
+* [threading](https://docs.python.org/3/library/threading.html)
