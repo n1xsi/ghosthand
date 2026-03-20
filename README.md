@@ -1,4 +1,11 @@
-# ghosthand
+<h1 align="center">
+  
+  <img src="assets/preview.png" align="top" alt="Logo Preview" width="30%"><br>
+
+  [![Python](https://custom-icon-badges.demolab.com/badge/3.12.12-a990e2?logo=pythonn&label=Python&labelColor=383838&style=for-the-badge)](#)
+  [![DearPyGui](https://custom-icon-badges.demolab.com/badge/2.2-a990e2?logo=dearpygui&label=DearPyGui&labelColor=383838&style=for-the-badge)](#)
+
+</h1>
 
 **GhostHand** – это автоматизированный софт с набором скриптов для помощи в FPS-играх.
 
