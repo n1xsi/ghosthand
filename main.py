@@ -1,6 +1,7 @@
 from scripts.pixel_triggerbot import pixel_trigger_instance
 from scripts.autopistol import autopistol_instance
 from scripts.snaptap import snap_tap_instance
+from scripts.anti_aim import anti_aim_instance
 from scripts.antiafk import antiafk_instance
 from scripts.aimpull import aimpull_instance
 from scripts.bunnyhop import bhop_instance
@@ -70,6 +71,18 @@ def update_mrc_speed(sender, app_data):
     mrc_instance.speed = app_data
     print(f"[debug-UI] mrc speed set to {app_data:.4f}")
 
+# ----- anti-aim -----
+def toggle_aa(sender, app_data):
+    anti_aim_instance.enabled = app_data
+    dpg.configure_item("antiaim_settings_group", show=app_data)
+    print(f"[debug-UI] Anti-Aim is {"ON" if app_data else "OFF"}")
+
+def update_aa_frequency(sender, app_data):
+    anti_aim_instance.frequency = app_data
+
+def update_aa_strength(sender, app_data):
+    anti_aim_instance.strength = app_data
+
 # ----- bhop -----
 def toggle_bhop(sender, app_data):
     bhop_instance.enabled = app_data
@@ -105,7 +118,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
     # Заголовок
     with dpg.group(horizontal=True):
         dpg.add_text("GHOSTHAND", color=DEEP_PURPLE, pos=(150, 0))
-        dpg.add_text("v0.7 | Dev Build", color=ADDITIONAL_BLACK)
+        dpg.add_text("v0.8 | Dev Build", color=ADDITIONAL_BLACK)
 
     dpg.add_spacer(height=5)
 
@@ -188,7 +201,31 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
         # Вкладка 2: Anti-Aim
         with dpg.tab(label="Anti-Aim"):
             dpg.add_spacer(height=10)
-            dpg.add_checkbox(label="Enable", enabled=False)
+
+            dpg.add_checkbox(label="Enable Flick AA", callback=toggle_aa)
+            with dpg.group(tag="antiaim_settings_group", show=False):
+                dpg.add_spacer(height=5)
+
+                with dpg.child_window(height=125, border=True):
+                    dpg.add_text("Flick Anti-Aim Settings", color=SOFT_PURPLE)
+
+                    dpg.add_slider_float(
+                        label="Frequency (sec)", 
+                        default_value=anti_aim_instance.frequency,
+                        min_value=0.02,
+                        max_value=2.0,
+                        callback=update_aa_frequency,
+                        format="%.2f"
+                    )
+
+                    dpg.add_slider_int(
+                        label="Angle Strength", 
+                        default_value=anti_aim_instance.strength,
+                        min_value=500,
+                        max_value=10000,
+                        callback=update_aa_strength
+                    )
+                    dpg.add_text("Press F in-game to toggle ON/OFF.", color=ADDITIONAL_BLACK)
 
         # Вкладка 3: Movement
         with dpg.tab(label="Movement"):
@@ -232,6 +269,8 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
             dpg.add_text("Pixel Trigger Bot: alt (hold)")
             dpg.add_text("AutoPistol: mouse4 (hold)")
             dpg.add_text("Mini-Recoil Control: mouse1 (hold)")
+            dpg.add_spacer(height=10)
+            dpg.add_text("Toggle Anti-Aim: F (toggle)")
             dpg.add_spacer(height=10)
             dpg.add_text("Bhop: space (hold)")
             dpg.add_text("Snap Tap: A/D (hold)")
@@ -281,6 +320,7 @@ if __name__ == "__main__":
     pixel_trigger_instance.start()
     snap_tap_instance.start()
     aimpull_instance.start()
+    anti_aim_instance.start()
 
     dpg.show_viewport()
     dpg.set_primary_window("Primary Window", True)
