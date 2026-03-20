@@ -1,9 +1,10 @@
 from src.core.input_sim import MouseMove, is_key_pressed
-import time
+import numpy as np
 import threading
+import time
 import math
 import mss
-import numpy as np
+
 
 # VK код для Левой Кнопки Мыши
 VK_LBUTTON = 0x01
@@ -14,10 +15,8 @@ class AimPullCore:
         self.running = False
         self.enabled = False
 
-        # Делитель скорости (Больше = медленнее доводка)
-        self.smooth = 1.0
-        # Размер квадрата поиска (100x100 пикселей от центра)
-        self.fov = 100
+        self.smooth = 1.0  # Делитель скорости (Больше = медленнее доводка)
+        self.fov = 100  # Размер квадрата поиска (100x100 пикселей от центра)
         self.tolerance = 60  # Допуск изменения цвета (аналог ColVn из AHK)
 
         # Цвет: Red: 216, Green: 42, Blue: 34 (0xD82A22 из AHK)
@@ -29,11 +28,9 @@ class AimPullCore:
         threading.Thread(target=self._loop, daemon=True).start()
 
     def _loop(self):
-        print("[Core] AimPull Loaded. AHK Sqrt-Algorithm active.")
-        
         # Инициализация mss ВНУТРИ потока
         with mss.mss() as sct:
-            monitor = sct.monitors[1]  # Получение разрешение основного монитора
+            monitor = sct.monitors[1]  # Получение разрешения экрана основного монитора
             center_x = monitor["width"] // 2
             center_y = monitor["height"] // 2
 
@@ -44,7 +41,7 @@ class AimPullCore:
 
                 # Триггер: Зажата ли Левая Кнопка Мыши?
                 if is_key_pressed(VK_LBUTTON):
-                    
+
                     # Зона поиска (Квадрат вокруг прицела)
                     bbox = {
                         "top": center_y - self.fov,
@@ -55,21 +52,21 @@ class AimPullCore:
 
                     # Делается скриншот зоны
                     img = np.array(sct.grab(bbox))
-                    
+
                     # Удаление Альфа-канала (он нам не нужен), оставляем BGR
                     pixels = img[:, :, :3]
 
                     # Поиск пикселя нужного цвета с учетом tolerance
                     diff = np.abs(pixels - self.target_color)
                     mask = np.all(diff <= self.tolerance, axis=-1)
-                    
+
                     # Получение координат всех найденных пикселей: (y, x)
                     found_pixels = np.argwhere(mask)
 
                     if len(found_pixels) > 0:
                         # Берётся первый попавшийся пиксель
                         target_y_local, target_x_local = found_pixels[0]
-                        
+
                         # Локальные координаты переводятся в экранные относительно прицела
                         AimX = target_x_local - self.fov
                         AimY = target_y_local - self.fov
@@ -92,7 +89,7 @@ class AimPullCore:
 
                         # Перемещение мыши
                         MouseMove(FinalX, FinalY)
-                        
+
                         # Задержка
                         time.sleep(0.01)
                 else:
