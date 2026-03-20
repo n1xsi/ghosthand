@@ -7,6 +7,7 @@ class AutoPistolCore:
     def __init__(self):
         self.running = False  # Глобальный переключатель потока
         self.enabled = False  # Переключатель функционала (чекбокс в меню)
+        self.delay = 0.01     # Задержка между выстрелами
 
     def _click(self):
         ctypes.windll.user32.mouse_event(0x0002, 0, 0, 0, 0)
@@ -21,7 +22,7 @@ class AutoPistolCore:
             if self.enabled:
                 if self._is_lbutton_down():
                     self._click()
-                    time.sleep(0.01)
+                    time.sleep(self.delay)
             time.sleep(0.01)
 
 

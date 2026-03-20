@@ -37,7 +37,13 @@ def update_fov(sender, app_data):
 # ----- autopistol -----
 def toggle_autopistol(sender, app_data):
     autopistol_instance.enabled = app_data
+    dpg.configure_item("autopistol_settings_group", show=app_data)
     print(f"[debug-UI] autopistol is {"ON" if app_data else "OFF"}")
+
+
+def update_autopistol_delay(sender, app_data):
+    autopistol_instance.delay = app_data
+    print(f"[debug-UI] autopistol delay set to {app_data:.4f}s")
 
 # ----- trigger -----
 def toggle_pixel_trigger(sender, app_data):
@@ -77,8 +83,10 @@ def toggle_aa(sender, app_data):
     dpg.configure_item("antiaim_settings_group", show=app_data)
     print(f"[debug-UI] Anti-Aim is {"ON" if app_data else "OFF"}")
 
+
 def update_aa_frequency(sender, app_data):
     anti_aim_instance.frequency = app_data
+
 
 def update_aa_strength(sender, app_data):
     anti_aim_instance.strength = app_data
@@ -174,6 +182,20 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
                     dpg.add_text("Hold L-ALT to scan.\nSmaller threshold = more sensitive trigger.", color=ADDITIONAL_BLACK)
 
             dpg.add_checkbox(label="AutoPistol", callback=toggle_autopistol)
+            with dpg.group(tag="autopistol_settings_group", show=False):
+                dpg.add_spacer(height=5)
+
+                with dpg.child_window(height=100, border=True):
+                    dpg.add_text("AutoPistol Settings", color=SOFT_PURPLE)
+                    dpg.add_slider_float(
+                        label="Delay",
+                        default_value=autopistol_instance.delay,
+                        min_value=0.005,
+                        max_value=1.0,
+                        callback=update_autopistol_delay,
+                        format="%.3f"
+                    )
+                    dpg.add_text("Hold mouse4 to fire. Lower delay = faster fire rate.", color=ADDITIONAL_BLACK)
 
             dpg.add_checkbox(label="Mini-Recoil Control", callback=toggle_mrc)
             with dpg.group(tag="mrc_settings_group", show=False):
