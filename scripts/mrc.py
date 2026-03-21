@@ -1,5 +1,5 @@
+from src.core.input_sim import MouseMove, is_key_pressed, VK_LBUTTON
 import threading
-import ctypes
 import time
 
 
@@ -10,29 +10,19 @@ class MiniRecoilCore:
         self.strength = 2  # Сила стягивания вниз
         self.speed = 0.01  # Ожидание перед следующим перемещением мыши
 
-        self.left_button_pressed = False  # Флаг для проверки удержания левой кнопки
-
-    def _move_mouse(self, dx, dy):
-        ctypes.windll.user32.mouse_event(0x0001, dx, dy, 0, 0)
-    
-    def _is_left_button_pressed(self):
-        return ctypes.windll.user32.GetAsyncKeyState(0x01) != 0
-
     def _loop(self):
         while self.running:
-            if self.enabled and self._is_left_button_pressed():
-                self.left_button_pressed = True
+            if self.enabled and is_key_pressed(VK_LBUTTON):
+                MouseMove(0, self.strength)
+                time.sleep(self.speed)
             else:
-                self.left_button_pressed = False
-            
-            if self.left_button_pressed:
-                self._move_mouse(0, self.strength)
-
-            time.sleep(self.speed)
+                # Если не стреляем - не грузим процессор
+                time.sleep(0.01)
 
     def start(self):
         self.running = True
         threading.Thread(target=self._loop, daemon=True).start()
+
 
 # Экземпляр класса MiniRecoilCore для импорта в меню
 mrc_instance = MiniRecoilCore()
