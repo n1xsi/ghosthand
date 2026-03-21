@@ -2,6 +2,7 @@ import threading
 import ctypes
 import ctypes.wintypes
 import traceback
+from src.core import input_sim
 
 # ─── Константы ──────────────────────────────────────────────
 WH_KEYBOARD_LL = 13
@@ -125,8 +126,10 @@ class SnapTapCore:
                 if nCode < 0:
                     return user32.CallNextHookEx(self.hook_handle, nCode, wParam, lParam)
 
-                kb = ctypes.cast(lParam, ctypes.POINTER(
-                    KBDLLHOOKSTRUCT)).contents
+                if input_sim.GLOBAL_PAUSE:
+                    return user32.CallNextHookEx(self.hook_handle, nCode, wParam, lParam)
+
+                kb = ctypes.cast(lParam, ctypes.POINTER(KBDLLHOOKSTRUCT)).contents
                 vk = kb.vkCode
 
                 # Пропускаем наши симуляции
