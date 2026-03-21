@@ -1,6 +1,8 @@
+from src.core.input_sim import MouseLeftClick, is_key_pressed
 import threading
-import ctypes
 import time
+
+VK_XBUTTON1 = 0x05  # mouse4
 
 
 class AutoPistolCore:
@@ -9,26 +11,20 @@ class AutoPistolCore:
         self.enabled = False  # Переключатель функционала (чекбокс в меню)
         self.delay = 0.01     # Задержка между выстрелами
 
-    def _click(self):
-        ctypes.windll.user32.mouse_event(0x0002, 0, 0, 0, 0)
-        ctypes.windll.user32.mouse_event(0x0004, 0, 0, 0, 0)
-    
-    def _is_lbutton_down(self):
-        # 0x05 - ближняя боковая кнопка, mouse4
-        return ctypes.windll.user32.GetAsyncKeyState(0x05) & 0x8000
-
-    def _loop(self):
-        while self.running:
-            if self.enabled:
-                if self._is_lbutton_down():
-                    self._click()
-                    time.sleep(self.delay)
-            time.sleep(0.01)
-
-
     def start(self):
         self.running = True
         threading.Thread(target=self._loop, daemon=True).start()
+
+    def _loop(self):
+        while self.running:
+            # Если галочка стоит и боковая кнопка зажата
+            if self.enabled and is_key_pressed(VK_XBUTTON1):
+                # Клик через симулятор
+                MouseLeftClick(delay=0.01)
+                time.sleep(self.delay)
+            else:
+                time.sleep(0.01)
+
 
 # Экземпляр класса AutoPistolCore для импорта в меню
 autopistol_instance = AutoPistolCore()
