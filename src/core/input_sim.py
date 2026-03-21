@@ -1,12 +1,31 @@
 import ctypes
 import time
 
+# -------- ПЕРЕМЕННЫЕ --------
+
+# Глобальная пауза
+GLOBAL_PAUSE = False
+
 # ИЗОЛЯЦИЯ - вместо глобального "ctypes.windll.user32" создание независимой копии
 user32 = ctypes.WinDLL('user32')
 SendInput = user32.SendInput
 
 # Отключение строгой проверки типов для этой локальной копии
 SendInput.argtypes = None
+
+# -------- КОНСТАНТЫ --------
+
+# DirectInput Scan Codes
+INPUT_MOUSE = 0
+MOUSEEVENTF_LEFTDOWN = 0x0002
+MOUSEEVENTF_LEFTUP = 0x0004
+WH_MOUSE_LL = 14
+WM_LBUTTONDOWN = 0x0201
+WM_LBUTTONUP = 0x0202
+DIK_SPACE = 0x39  # Скан-код пробела
+VK_SPACE = 0x20  # Код виртуальной клавиши для проверки удержания (GetAsyncKeyState)
+VK_LBUTTON = 0x01
+MOUSEEVENTF_MOVE = 0x0001
 
 # C type definitions
 PUL = ctypes.POINTER(ctypes.c_ulong)
@@ -51,19 +70,6 @@ class Input(ctypes.Structure):
 class POINT(ctypes.Structure):
     _fields_ = [("x", ctypes.c_long), ("y", ctypes.c_long)]
 
-
-# DirectInput Scan Codes
-INPUT_MOUSE = 0
-MOUSEEVENTF_LEFTDOWN = 0x0002
-MOUSEEVENTF_LEFTUP = 0x0004
-WH_MOUSE_LL = 14
-WM_LBUTTONDOWN = 0x0201
-WM_LBUTTONUP = 0x0202
-DIK_SPACE = 0x39  # Скан-код пробела
-VK_SPACE = 0x20  # Код виртуальной клавиши для проверки удержания (GetAsyncKeyState)
-VK_LBUTTON = 0x01
-MOUSEEVENTF_MOVE = 0x0001
-
 # Тип для callback-функции хука
 HOOKPROC = ctypes.WINFUNCTYPE(
     ctypes.c_long,
@@ -73,7 +79,9 @@ HOOKPROC = ctypes.WINFUNCTYPE(
 )
 
 
+# -------- ФУНКЦИИ --------
 def PressKey(hexKeyCode):
+    if GLOBAL_PAUSE: return
     extra = ctypes.c_ulong(0)
     ii_ = Input_I()
     # 0x0008: KEYEVENTF_SCANCODE
@@ -83,6 +91,7 @@ def PressKey(hexKeyCode):
 
 
 def ReleaseKey(hexKeyCode):
+    if GLOBAL_PAUSE: return
     extra = ctypes.c_ulong(0)
     ii_ = Input_I()
     # 0x0008 | 0x0002: KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP
@@ -92,17 +101,20 @@ def ReleaseKey(hexKeyCode):
 
 
 def ClickKey(hexKeyCode, delay=0.015):
+    if GLOBAL_PAUSE: return
     PressKey(hexKeyCode)
     time.sleep(delay)
     ReleaseKey(hexKeyCode)
 
 # Функция проверки физического нажатия
 def is_key_pressed(vk_code):
+    if GLOBAL_PAUSE: return
     # 0x8000 = "нажата в данный момент"
     return (ctypes.windll.user32.GetAsyncKeyState(vk_code) & 0x8000) != 0
 
 
 def MouseLeftClick(delay=0.01):
+    if GLOBAL_PAUSE: return
     """Имитирует нажатие левой кнопки мыши"""
     extra = ctypes.c_ulong(0)
     ii_ = Input_I()
@@ -121,6 +133,7 @@ def MouseLeftClick(delay=0.01):
 
 
 def MouseMove(dx, dy):
+    if GLOBAL_PAUSE: return
     extra = ctypes.c_ulong(0)
     ii_ = Input_I()
 

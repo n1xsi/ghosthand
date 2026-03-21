@@ -6,6 +6,7 @@ from scripts.antiafk import antiafk_instance
 from scripts.aimpull import aimpull_instance
 from scripts.bunnyhop import bhop_instance
 from scripts.mrc import mrc_instance
+import scripts.panic
 
 import dearpygui.dearpygui as dpg
 
@@ -125,8 +126,9 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
 
     # Заголовок
     with dpg.group(horizontal=True):
-        dpg.add_text("GHOSTHAND", color=DEEP_PURPLE, pos=(150, 0))
+        dpg.add_text("GHOSTHAND", color=DEEP_PURPLE)
         dpg.add_text("v0.8 | Dev Build", color=ADDITIONAL_BLACK)
+        dpg.add_text("SYSTEM ACTIVE", tag="status_text", color=(50, 255, 50, 255), pos=(450, 8))
 
     dpg.add_spacer(height=5)
 
@@ -279,14 +281,14 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
             dpg.add_checkbox(label="Anti-AFK", callback=toggle_antiafk)
             dpg.add_checkbox(label="Fast-Zoom", enabled=False)
             dpg.add_checkbox(label="Zoom to Mouse", enabled=False)
-            dpg.add_spacer(height=5)
-            dpg.add_button(label="PANIC UNLOAD", width=150)
             # configs system
             # theme system
 
         # Вкладка 5: Keybinds
         with dpg.tab(label="Keybinds"):
             dpg.add_spacer(height=10)
+            dpg.add_text("Panic Key: PAUSE (toggle)")
+            dpg.add_spacer(height=20)
             dpg.add_text("AimPull: mouse1 (click/hold)")
             dpg.add_text("Pixel Trigger Bot: alt (hold)")
             dpg.add_text("AutoPistol: mouse4 (hold)")
