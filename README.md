@@ -24,26 +24,28 @@
 
 ## ✅ Функции, реализованные на данный момент
 Имеется уже готовое меню с следующими рабочими функциями:
-* AimPull
-* Autopistol
-* Mini-Recoil Control
-* Pixel Trigger Bot
-* Flick Anti-Aim
-* Bhop
-* Anti-AFK
-* Snap Tap
+* AimPull _(тянет прицел к определённому цвету)_
+* Autopistol _(быстрый автоповтор ЛКМ)_
+* Mini-Recoil Control _(тянет прицел вниз при зажатии ЛКМ)_
+* Pixel Trigger Bot _(меняются пиксели у прицела - стреляет)_
+* Flick Anti-Aim _(быстро отводит камеру в сторону и обратно)_
+* Bhop _(автоповтор пробела при его зажатии)_
+* Anti-AFK _(ходит в стороны раз в несколько секунд)_
+* Snap Tap _(быстрая смена направления движения на A/D)_
+* PANIC KEY _(выключение всех функций на Pause)_
 
 ## 🎮 Совместимость с играми
 GhostHand проверен и совместим на следующих играх (список будет пополняться):
 
-**Полная совместимость (бо́льшая часть функций):**
-* hl1
+**:accessibility: Полная совместимость (бо́льшая часть функций):**
 * cs 1.6 + cs:s + cs:go
+* l4d + l4d2
+* hl1
 
-**Только в Secured-режиме:**
+**:feelsgood: Только в Secured-режиме:**
 * cs2
 * Rust
-* Valorant (vanguard)
+* Valorant (vanguard xdd)
 
 ## ⚙ Стек технологий
 * [Python 3.12.12](https://www.python.org/downloads/release/python-31212/)
