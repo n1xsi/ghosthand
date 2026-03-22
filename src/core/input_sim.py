@@ -15,17 +15,21 @@ SendInput.argtypes = None
 
 # -------- КОНСТАНТЫ --------
 
-# DirectInput Scan Codes
+# Mouse Buttons
 INPUT_MOUSE = 0
+MOUSEEVENTF_MOVE = 0x0001
 MOUSEEVENTF_LEFTDOWN = 0x0002
 MOUSEEVENTF_LEFTUP = 0x0004
-WH_MOUSE_LL = 14
-WM_LBUTTONDOWN = 0x0201
-WM_LBUTTONUP = 0x0202
-DIK_SPACE = 0x39  # Скан-код пробела
-VK_SPACE = 0x20  # Код виртуальной клавиши для проверки удержания (GetAsyncKeyState)
+MOUSEEVENTF_RIGHTDOWN = 0x0008
+MOUSEEVENTF_RIGHTUP   = 0x0010
 VK_LBUTTON = 0x01
-MOUSEEVENTF_MOVE = 0x0001
+VK_XBUTTON1 = 0x05  # mouse4
+
+# Keyboard Scan Codes
+DIK_Q = 0x10     # Скан-код клавиши Q
+VK_PAUSE = 0x13  # Кнопка Pause/Break
+DIK_ALT = 0xA4   # Скан-код клавиши Alt
+VK_F = 0x46      # Виртуальный код клавиши 'F'
 
 # C type definitions
 PUL = ctypes.POINTER(ctypes.c_ulong)
