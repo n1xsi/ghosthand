@@ -117,21 +117,21 @@ def is_key_pressed(vk_code):
     return (ctypes.windll.user32.GetAsyncKeyState(vk_code) & 0x8000) != 0
 
 
-def MouseLeftClick(delay=0.01):
+def MouseClick(delay=0.01, m_down=MOUSEEVENTF_LEFTDOWN, m_up=MOUSEEVENTF_LEFTUP):
     if GLOBAL_PAUSE: return
     """Имитирует нажатие левой кнопки мыши"""
     extra = ctypes.c_ulong(0)
     ii_ = Input_I()
 
     # Отправляем DOWN
-    ii_.mi = MouseInput(0, 0, 0, MOUSEEVENTF_LEFTDOWN, 0, ctypes.pointer(extra))
+    ii_.mi = MouseInput(0, 0, 0, m_down, 0, ctypes.pointer(extra))
     x = Input(ctypes.c_ulong(INPUT_MOUSE), ii_)
     SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
     time.sleep(delay)
 
     # Отправляем UP
-    ii_.mi = MouseInput(0, 0, 0, MOUSEEVENTF_LEFTUP, 0, ctypes.pointer(extra))
+    ii_.mi = MouseInput(0, 0, 0, m_up, 0, ctypes.pointer(extra))
     x = Input(ctypes.c_ulong(INPUT_MOUSE), ii_)
     SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 

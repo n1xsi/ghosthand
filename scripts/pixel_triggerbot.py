@@ -1,4 +1,4 @@
-from src.core.input_sim import POINT, MouseLeftClick, is_key_pressed, user32, DIK_ALT
+from src.core.input_sim import POINT, MouseClick, is_key_pressed, user32, DIK_ALT
 import threading
 import ctypes
 import time
@@ -80,7 +80,7 @@ class TriggerBotCore:
                         # Задержка перед выстрелом
                         time.sleep(self.reaction_delay)
                         # Зажатие левой кнопки мыши в течение 0.01 сек
-                        MouseLeftClick(delay=0.01)
+                        MouseClick(delay=0.01)
 
                         # Ожидание перед следующим кликом, чтобы не спамить
                         time.sleep(self.shoot_delay)
