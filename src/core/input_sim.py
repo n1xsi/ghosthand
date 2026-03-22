@@ -23,7 +23,8 @@ MOUSEEVENTF_LEFTUP = 0x0004
 MOUSEEVENTF_RIGHTDOWN = 0x0008
 MOUSEEVENTF_RIGHTUP   = 0x0010
 VK_LBUTTON = 0x01
-VK_XBUTTON1 = 0x05  # mouse4
+VK_XBUTTON1 = 0x05   # Нижняя боковая кнопка мыши (mouse4)
+VK_MIDBUTTON = 0x04  # Виртуальный код Средней кнопки мыши (mouse3)
 
 # Keyboard Scan Codes
 DIK_Q = 0x10     # Скан-код клавиши Q
