@@ -1,8 +1,6 @@
-from src.core.input_sim import MouseLeftClick, is_key_pressed
+from src.core.input_sim import MouseLeftClick, is_key_pressed, VK_XBUTTON1
 import threading
 import time
-
-VK_XBUTTON1 = 0x05  # mouse4
 
 
 class AutoPistolCore:
@@ -19,7 +17,6 @@ class AutoPistolCore:
         while self.running:
             # Если галочка стоит и боковая кнопка зажата
             if self.enabled and is_key_pressed(VK_XBUTTON1):
-                # Клик через симулятор
                 MouseLeftClick(delay=0.01)
                 time.sleep(self.delay)
             else:

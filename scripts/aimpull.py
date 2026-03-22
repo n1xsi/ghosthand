@@ -1,4 +1,4 @@
-from src.core.input_sim import MouseMove, is_key_pressed
+from src.core.input_sim import MouseMove, is_key_pressed, VK_LBUTTON
 import numpy as np
 import threading
 import time
@@ -6,17 +6,13 @@ import math
 import mss
 
 
-# VK код для Левой Кнопки Мыши
-VK_LBUTTON = 0x01
-
-
 class AimPullCore:
     def __init__(self):
         self.running = False
         self.enabled = False
 
-        self.smooth = 1.0  # Делитель скорости (Больше = медленнее доводка)
-        self.fov = 100  # Размер квадрата поиска (100x100 пикселей от центра)
+        self.smooth = 1.0    # Делитель скорости (Больше = медленнее доводка)
+        self.fov = 100       # Размер квадрата поиска (100x100 пикселей от центра)
         self.tolerance = 60  # Допуск изменения цвета (аналог ColVn из AHK)
 
         # Цвет: Red: 216, Green: 42, Blue: 34 (0xD82A22 из AHK)
@@ -30,7 +26,8 @@ class AimPullCore:
     def _loop(self):
         # Инициализация mss ВНУТРИ потока
         with mss.mss() as sct:
-            monitor = sct.monitors[1]  # Получение разрешения экрана основного монитора
+            # Получение разрешения экрана основного монитора
+            monitor = sct.monitors[1]
             center_x = monitor["width"] // 2
             center_y = monitor["height"] // 2
 
@@ -95,6 +92,7 @@ class AimPullCore:
                 else:
                     # Если ЛКМ не зажата
                     time.sleep(0.005)
+
 
 # Экземпляр класса AimPullCore для импорта в меню
 aimpull_instance = AimPullCore()

@@ -1,11 +1,9 @@
-from src.core.input_sim import POINT, MouseLeftClick, is_key_pressed
+from src.core.input_sim import POINT, MouseLeftClick, is_key_pressed, user32, DIK_ALT
 import threading
 import ctypes
 import time
 
-# WinAPI функции для работы с графикой
-user32 = ctypes.windll.user32
-gdi32 = ctypes.windll.gdi32
+gdi32 = ctypes.windll.gdi32  # WinAPI для работы с графикой
 
 
 def get_color(hdc, x, y):
@@ -45,7 +43,7 @@ class TriggerBotCore:
                 continue
 
             # Проверка, зажат ли триггер (Левый ALT)
-            if is_key_pressed(0xA4):
+            if is_key_pressed(DIK_ALT):
 
                 # ПЕРВОЕ НАЖАТИЕ (Захват начального цвета)
                 if not was_pressed:
@@ -79,8 +77,10 @@ class TriggerBotCore:
 
                     # Если дистанция цвета больше порога - SHOOT!
                     if color_distance > current_threshold:
-                        time.sleep(self.reaction_delay)  # Задержка перед выстрелом
-                        MouseLeftClick(delay=0.01)  # Зажатие левой кнопки мыши в течение 0.01 сек
+                        # Задержка перед выстрелом
+                        time.sleep(self.reaction_delay)
+                        # Зажатие левой кнопки мыши в течение 0.01 сек
+                        MouseLeftClick(delay=0.01)
 
                         # Ожидание перед следующим кликом, чтобы не спамить
                         time.sleep(self.shoot_delay)

@@ -1,14 +1,13 @@
-from src.core.input_sim import MouseMove, is_key_pressed
+from src.core.input_sim import MouseMove, is_key_pressed, VK_F
 import threading
 import time
 
-VK_F = 0x46  # Виртуальный код клавиши 'F'
 
 class AntiAimCore:
     def __init__(self):
         self.running = False
         self.enabled = False  # Разрешено ли использовать функцию (Галочка в меню)
-        self.active = False  # Включить ли антиаимы (Клавиша F)
+        self.active = False   # Включить ли антиаимы (Клавиша F)
 
         # Настройки из меню
         self.frequency = 0.15  # Как часто дергается голова (секунды)
@@ -29,7 +28,8 @@ class AntiAimCore:
             current_key_state = is_key_pressed(VK_F)  # Проверка нажатия клавиши F
             # Если клавиша ТОЛЬКО ЧТО нажата (ранее была отпущена)
             if current_key_state and not key_was_pressed:
-                self.active = not self.active  # Переключаем состояние (True -> False -> True)
+                # Переключение состояния (True -> False -> True)
+                self.active = not self.active
                 print(f"[Core] Anti-Aim Togged: {'ON' if self.active else 'OFF'}")
                 key_was_pressed = True
 
@@ -58,6 +58,7 @@ class AntiAimCore:
                 # Если функция разрешена (галочка стоит), но выключена клавишей F
                 # Спим чуть-чуть, чтобы быстро среагировать на нажатие F
                 time.sleep(0.005)
+
 
 # Экземпляр класса BhopCore для импорта в меню
 anti_aim_instance = AntiAimCore()

@@ -4,16 +4,12 @@ import threading
 import time
 
 
-VK_PAUSE = 0x13  # Кнопка Pause/Break
-
-
 def panic_loop():
     was_pressed = False
 
     while True:
         # Чтение кнопки НАПРЯМУЮ через Windows, иначе пауза заблокирует чтение кнопки Паузы ))
-        current_state = (input_sim.user32.GetAsyncKeyState(
-            VK_PAUSE) & 0x8000) != 0
+        current_state = (input_sim.user32.GetAsyncKeyState(input_sim.VK_PAUSE) & 0x8000) != 0
 
         if current_state and not was_pressed:
             # Переключение глобальной переменной в ядре
