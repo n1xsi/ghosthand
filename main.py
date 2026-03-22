@@ -1,7 +1,8 @@
 from scripts.pixel_triggerbot import pixel_trigger_instance
 from scripts.autopistol import autopistol_instance
-from scripts.snaptap import snap_tap_instance
 from scripts.anti_aim import anti_aim_instance
+from scripts.fastzoom import fastzoom_instance
+from scripts.snaptap import snap_tap_instance
 from scripts.antiafk import antiafk_instance
 from scripts.aimpull import aimpull_instance
 from scripts.bunnyhop import bhop_instance
@@ -117,6 +118,11 @@ def toggle_snap_tap(sender, app_data):
 def toggle_antiafk(sender, app_data):
     antiafk_instance.enabled = app_data
     print(f"[debug-UI] anti-afk is {"ON" if app_data else "OFF"}")
+
+# ----- fast zoom -----
+def toggle_fastzoom(sender, app_data):
+    fastzoom_instance.enabled = app_data
+    print(f"[debug-UI] Fast-Zoom is {"ON" if app_data else "OFF"}")
 
 
 # -------------------------- GUI SETUP --------------------------
@@ -279,7 +285,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
             dpg.add_spacer(height=10)
             dpg.add_checkbox(label="Secured Mode", enabled=False)
             dpg.add_checkbox(label="Anti-AFK", callback=toggle_antiafk)
-            dpg.add_checkbox(label="Fast-Zoom", enabled=False)
+            dpg.add_checkbox(label="FastZoom", callback=toggle_fastzoom)
             dpg.add_checkbox(label="Zoom to Mouse", enabled=False)
             # configs system
             # theme system
@@ -298,6 +304,8 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
             dpg.add_spacer(height=10)
             dpg.add_text("Bhop: space (hold)")
             dpg.add_text("Snap Tap: A/D (hold)")
+            dpg.add_spacer(height=10)
+            dpg.add_text("FastZoom: mouse3 (click/hold)")
 
 
 # -------------------------- ТЕМА И СТИЛИ --------------------------
@@ -345,6 +353,7 @@ if __name__ == "__main__":
     snap_tap_instance.start()
     aimpull_instance.start()
     anti_aim_instance.start()
+    fastzoom_instance.start()
 
     dpg.show_viewport()
     dpg.set_primary_window("Primary Window", True)
