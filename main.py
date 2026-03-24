@@ -122,7 +122,13 @@ def toggle_antiafk(sender, app_data):
 # ----- fast zoom -----
 def toggle_fastzoom(sender, app_data):
     fastzoom_instance.enabled = app_data
+    dpg.configure_item("fastzoom_settings_group", show=app_data)
     print(f"[debug-UI] Fast-Zoom is {"ON" if app_data else "OFF"}")
+
+
+def toggle_fastzoom_qq_switch(sender, app_data):
+    fastzoom_instance.qq_switch = app_data
+    print(f"[debug-UI] Fast-Zoom Q-Q switch is {"ON" if app_data else "OFF"}")
 
 
 # -------------------------- GUI SETUP --------------------------
@@ -285,7 +291,15 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
             dpg.add_spacer(height=10)
             dpg.add_checkbox(label="Secured Mode", enabled=False)
             dpg.add_checkbox(label="Anti-AFK", callback=toggle_antiafk)
+
             dpg.add_checkbox(label="FastZoom", callback=toggle_fastzoom)
+            with dpg.group(tag="fastzoom_settings_group", show=False):
+                dpg.add_spacer(height=5)
+                with dpg.child_window(height=115, border=True):
+                    dpg.add_text("FastZoom Settings", color=SOFT_PURPLE)
+                    dpg.add_checkbox(label="Q-Q switch", callback=toggle_fastzoom_qq_switch, default_value=fastzoom_instance.qq_switch)
+                    dpg.add_text("Click mouse3 to zoom + shot\n(+ weapon fastswitch if enabled).", color=ADDITIONAL_BLACK)
+
             dpg.add_checkbox(label="Zoom to Mouse", enabled=False)
             # configs system
             # theme system
@@ -294,7 +308,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
         with dpg.tab(label="Keybinds"):
             dpg.add_spacer(height=10)
             dpg.add_text("Panic Key: PAUSE (toggle)")
-            dpg.add_spacer(height=20)
+            dpg.add_spacer(height=10)
             dpg.add_text("AimPull: mouse1 (click/hold)")
             dpg.add_text("Pixel Trigger Bot: alt (hold)")
             dpg.add_text("AutoPistol: mouse4 (hold)")

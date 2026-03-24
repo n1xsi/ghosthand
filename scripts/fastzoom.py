@@ -8,6 +8,7 @@ class FastZoomCore:
         self.running = False
         self.enabled = False
 
+        self.qq_switch = True
         self.macro_delay = 0.015  # Задержка между действиями макроса
 
     def start(self):
@@ -31,12 +32,13 @@ class FastZoomCore:
                 MouseClick(delay=0.01)
                 time.sleep(self.macro_delay)
 
-                # Нажатие 'Q' (Свап на нож)
-                ClickKey(DIK_Q, delay=0.01)
-                time.sleep(self.macro_delay)
+                if self.qq_switch:
+                    # Нажатие 'Q' (Свап на нож)
+                    ClickKey(DIK_Q, delay=0.01)
+                    time.sleep(self.macro_delay)
 
-                # Нажатие 'Q' (Свап обратно на AWP)
-                ClickKey(DIK_Q, delay=0.01)
+                    # Нажатие 'Q' (Свап обратно на AWP)
+                    ClickKey(DIK_Q, delay=0.01)
 
                 # Защита от спама (чтобы макрос не сработал 10 раз, пока ты держишь кнопку)
                 time.sleep(0.5)
