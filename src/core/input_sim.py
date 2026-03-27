@@ -31,6 +31,7 @@ DIK_Q = 0x10     # Скан-код клавиши Q
 VK_PAUSE = 0x13  # Кнопка Pause/Break
 DIK_ALT = 0xA4   # Скан-код клавиши Alt
 VK_F = 0x46      # Виртуальный код клавиши 'F'
+VK_T = 0x54      # Виртуальный код клавиши 'T'
 
 # C type definitions
 PUL = ctypes.POINTER(ctypes.c_ulong)
