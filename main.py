@@ -5,6 +5,7 @@ from scripts.fastzoom import fastzoom_instance
 from scripts.snaptap import snap_tap_instance
 from scripts.antiafk import antiafk_instance
 from scripts.aimpull import aimpull_instance
+from scripts.turn180 import turn180_instance
 from scripts.bunnyhop import bhop_instance
 from scripts.mrc import mrc_instance
 import scripts.panic
@@ -130,6 +131,15 @@ def toggle_fastzoom_qq_switch(sender, app_data):
     fastzoom_instance.qq_switch = app_data
     print(f"[debug-UI] Fast-Zoom Q-Q switch is {"ON" if app_data else "OFF"}")
 
+# ----- turn180 -----
+def toggle_turn180(sender, app_data):
+    turn180_instance.enabled = app_data
+    dpg.configure_item("turn180_settings_group", show=app_data)
+    print(f"[debug-UI] turn180 is {"ON" if app_data else "OFF"}")
+
+
+def update_turn180_pixels(sender, app_data):
+    turn180_instance.pixels = app_data
 
 # -------------------------- GUI SETUP --------------------------
 dpg.create_context()  # Инициализация DearPyGui
@@ -139,7 +149,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
     # Заголовок
     with dpg.group(horizontal=True):
         dpg.add_text("GHOSTHAND", color=DEEP_PURPLE)
-        dpg.add_text("v0.8 | Dev Build", color=ADDITIONAL_BLACK)
+        dpg.add_text("v0.9 | Dev Build", color=ADDITIONAL_BLACK)
         dpg.add_text("SYSTEM ACTIVE", tag="status_text", color=(50, 255, 50, 255), pos=(450, 8))
 
     dpg.add_spacer(height=5)
@@ -301,8 +311,22 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
                     dpg.add_text("Click mouse3 to zoom + shot\n(+ weapon fastswitch if enabled).", color=ADDITIONAL_BLACK)
 
             dpg.add_checkbox(label="Zoom to Mouse", enabled=False)
-            # configs system
-            # theme system
+
+            dpg.add_checkbox(label="180°-turn", callback=toggle_turn180)
+            with dpg.group(tag="turn180_settings_group", show=False):
+                dpg.add_spacer(height=5)
+                with dpg.child_window(height=125, border=True):
+                    dpg.add_text("Turn Settings", color=SOFT_PURPLE)
+                    dpg.add_slider_int(
+                        label="Distance (Pixels)", 
+                        default_value=turn180_instance.pixels,
+                        min_value=500,
+                        max_value=10000,
+                        callback=update_turn180_pixels
+                    )
+                    dpg.add_text("Press T to turn. Turn off your mouse acceleration.", color=ADDITIONAL_BLACK)
+                    dpg.add_text("Adjust the slider until you do exactly a 180 turn.", color=ADDITIONAL_BLACK)
+
 
         # Вкладка 5: Keybinds
         with dpg.tab(label="Keybinds"):
@@ -320,6 +344,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
             dpg.add_text("Snap Tap: A/D (hold)")
             dpg.add_spacer(height=10)
             dpg.add_text("FastZoom: mouse3 (click/hold)")
+            dpg.add_text("180°-turn: T (click)")
 
 
 # -------------------------- ТЕМА И СТИЛИ --------------------------
@@ -368,6 +393,7 @@ if __name__ == "__main__":
     aimpull_instance.start()
     anti_aim_instance.start()
     fastzoom_instance.start()
+    turn180_instance.start()
 
     dpg.show_viewport()
     dpg.set_primary_window("Primary Window", True)
