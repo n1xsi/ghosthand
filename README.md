@@ -23,7 +23,7 @@
 > Для лучшей работы программы её **рекомендуется** запускать от имени администратора, а в играх использовать режим отображения окна _"Полноэкранный в окне"_ или _"Оконный"_.
 
 ## ✅ Функции, реализованные на данный момент
-Имеется уже готовое меню с следующими рабочими функциями:
+Имеется уже готовое меню с следующими рабочими **настраиваемыми** функциями:
 * AimPull _(тянет прицел к определённому цвету)_
 * Autopistol _(быстрый автоповтор ЛКМ)_
 * Mini-Recoil Control _(тянет прицел вниз при зажатии ЛКМ)_
@@ -33,6 +33,7 @@
 * Anti-AFK _(ходит в стороны раз в несколько секунд)_
 * Snap Tap _(быстрая смена направления движения на A/D)_
 * FastZoom _(быстрое прицеливание+выстрел)_
+* 180°-turn _(поворот на 180 градусов)_
 * PANIC KEY _(выключение/включение всех функций на Pause)_
 
 Функции включаются через чекбоксы, у каждой функции свой бинд (который можно посмотреть во вкладке `Keybinds`), значения в функциях можно менять через ползунок или нажав по ползунку Ctrl+LMB и введя значение.
@@ -41,14 +42,16 @@
 В теории GhostHand полностью совместим со всеми играми (ибо софт имитирует нажатия клавиш и просто сканит экран), но вот точный список проверенных игр (он будет пополняться):
 
 **:accessibility: Полная совместимость (бо́льшая часть функций):**
-* cs 1.6 + cs:s + cs:go
-* l4d + l4d2
-* hl1
-* postal 2 multiplayer
-* deathmatch classic
+* <img src="https://cdn2.steamgriddb.com/icon/2ec6c9b2b8bd4007bf7959141ef58651/32/32x32.png" align="top"> cs 1.6
+* <img src="https://cdn2.steamgriddb.com/icon/052c3ffc93bd3a4d5fc379bf96fabea8/32/32x32.png" align="top"> cs:s
+* <img src="https://cdn2.steamgriddb.com/icon/1854878c9953ed65c26b5f12760fed2c/32/32x32.png" align="top"> cs:go
+* <img src="https://cdn2.steamgriddb.com/icon/01c262a2f7d8fa498b3ca5dd8837353e/32/32x32.png" align="top"> l4d + l4d2
+* <img src="https://cdn2.steamgriddb.com/icon/9e8c7ed7adbba14c3937afb4ee263e66/32/32x32.png" align="top"> hl1
+* <img src="https://cdn2.steamgriddb.com/icon/3fd33fca2c8309458ce87fc2777e51f6/32/32x32.png" align="top"> postal 2 multiplayer
+* <img src="https://cdn2.steamgriddb.com/icon/60cf63b263ca6b6955d9bb680cc85ca9/24/32x32.png" align="top"> deathmatch classic
 
 **:feelsgood: Только в Secured-режиме:**
-* cs2
+* <img src="https://cdn2.steamgriddb.com/icon/e1bd06c3f8089e7552aa0552cb387c92/8/32x32.png" align="top"> cs2
 
 ## ⚙ Стек технологий
 * [Python 3.12.12](https://www.python.org/downloads/release/python-31212/)
