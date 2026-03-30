@@ -24,7 +24,7 @@
 
 ## ✅ Функции, реализованные на данный момент
 Имеется уже готовое меню с следующими рабочими **настраиваемыми** функциями:
-* AimPull _(тянет прицел к определённому цвету)_
+* AimPull _(тянет прицел к определённому цвету + FOV circle поверх игры)_
 * Autopistol _(быстрый автоповтор ЛКМ)_
 * Mini-Recoil Control _(тянет прицел вниз при зажатии ЛКМ)_
 * Pixel Trigger Bot _(меняются пиксели у прицела - стреляет)_
@@ -40,18 +40,24 @@
 
 ## 🎮 Совместимость с играми
 В теории GhostHand полностью совместим со всеми играми (ибо софт имитирует нажатия клавиш и просто сканит экран), но вот точный список проверенных игр (он будет пополняться):
+<details>
+  <summary>🤝 Проверенный список совместимых игр</summary>
+  <br>
 
-**:accessibility: Полная совместимость (бо́льшая часть функций):**
-* <img src="https://cdn2.steamgriddb.com/icon/2ec6c9b2b8bd4007bf7959141ef58651/32/32x32.png" align="top"> cs 1.6
-* <img src="https://cdn2.steamgriddb.com/icon/052c3ffc93bd3a4d5fc379bf96fabea8/32/32x32.png" align="top"> cs:s
-* <img src="https://cdn2.steamgriddb.com/icon/1854878c9953ed65c26b5f12760fed2c/32/32x32.png" align="top"> cs:go
-* <img src="https://cdn2.steamgriddb.com/icon/01c262a2f7d8fa498b3ca5dd8837353e/32/32x32.png" align="top"> l4d + l4d2
-* <img src="https://cdn2.steamgriddb.com/icon/9e8c7ed7adbba14c3937afb4ee263e66/32/32x32.png" align="top"> hl1
-* <img src="https://cdn2.steamgriddb.com/icon/3fd33fca2c8309458ce87fc2777e51f6/32/32x32.png" align="top"> postal 2 multiplayer
-* <img src="https://cdn2.steamgriddb.com/icon/60cf63b263ca6b6955d9bb680cc85ca9/24/32x32.png" align="top"> deathmatch classic
+  **:accessibility: Полная совместимость (бо́льшая часть функций):**
+  * <img src="https://cdn2.steamgriddb.com/icon/2ec6c9b2b8bd4007bf7959141ef58651/32/32x32.png" align="top"> cs 1.6
+  * <img src="https://cdn2.steamgriddb.com/icon/052c3ffc93bd3a4d5fc379bf96fabea8/32/32x32.png" align="top"> cs:s
+  * <img src="https://cdn2.steamgriddb.com/icon/1854878c9953ed65c26b5f12760fed2c/32/32x32.png" align="top"> cs:go
+  * <img src="https://cdn2.steamgriddb.com/icon/01c262a2f7d8fa498b3ca5dd8837353e/32/32x32.png" align="top"> l4d + l4d2
+  * <img src="https://cdn2.steamgriddb.com/icon/9e8c7ed7adbba14c3937afb4ee263e66/32/32x32.png" align="top"> hl1
+  * <img src="https://cdn2.steamgriddb.com/icon/3fd33fca2c8309458ce87fc2777e51f6/32/32x32.png" align="top"> postal 2 multiplayer
+  * <img src="https://cdn2.steamgriddb.com/icon/60cf63b263ca6b6955d9bb680cc85ca9/24/32x32.png" align="top"> deathmatch classic
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/1280770/a40efa7f154decf48622a25f8b4fe9b67929d7e3.jpg" align="top"> redmatch 2
 
-**:feelsgood: Только в Secured-режиме:**
-* <img src="https://cdn2.steamgriddb.com/icon/e1bd06c3f8089e7552aa0552cb387c92/8/32x32.png" align="top"> cs2
+  **:feelsgood: Только в Secured-режиме:**
+  * <img src="https://cdn2.steamgriddb.com/icon/e1bd06c3f8089e7552aa0552cb387c92/8/32x32.png" align="top"> cs2
+
+</details>
 
 ## ⚙ Стек технологий
 * [Python 3.12.12](https://www.python.org/downloads/release/python-31212/)
