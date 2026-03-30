@@ -19,6 +19,10 @@ class AimPullCore:
         # В OpenCV и MSS формат цвета B, G, R!!!
         self.target_color = np.array([34, 42, 216])
 
+        # Переменные для отображения круга (FOV)
+        self.show_fov = False         # Показывать ли круг
+        self.fov_color = "#FFFFFF"  # Цвет круга (по умолчанию - Белый)
+
     def start(self):
         self.running = True
         threading.Thread(target=self._loop, daemon=True).start()
