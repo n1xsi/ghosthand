@@ -44,18 +44,18 @@
   <summary>🤝 Проверенный список совместимых игр</summary>
   <br>
 
-  **:accessibility: Полная совместимость (бо́льшая часть функций):**
-  * <img src="https://cdn2.steamgriddb.com/icon/2ec6c9b2b8bd4007bf7959141ef58651/32/32x32.png" align="top"> cs 1.6
-  * <img src="https://cdn2.steamgriddb.com/icon/052c3ffc93bd3a4d5fc379bf96fabea8/32/32x32.png" align="top"> cs:s
-  * <img src="https://cdn2.steamgriddb.com/icon/1854878c9953ed65c26b5f12760fed2c/32/32x32.png" align="top"> cs:go
-  * <img src="https://cdn2.steamgriddb.com/icon/01c262a2f7d8fa498b3ca5dd8837353e/32/32x32.png" align="top"> l4d + l4d2
-  * <img src="https://cdn2.steamgriddb.com/icon/9e8c7ed7adbba14c3937afb4ee263e66/32/32x32.png" align="top"> hl1
-  * <img src="https://cdn2.steamgriddb.com/icon/3fd33fca2c8309458ce87fc2777e51f6/32/32x32.png" align="top"> postal 2 multiplayer
-  * <img src="https://cdn2.steamgriddb.com/icon/60cf63b263ca6b6955d9bb680cc85ca9/24/32x32.png" align="top"> deathmatch classic
-  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/1280770/a40efa7f154decf48622a25f8b4fe9b67929d7e3.jpg" align="top"> redmatch 2
+  **:accessibility: Полная совместимость** _(корректно работает бо́льшая часть функций)_:
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/10/6b0312cda02f5f777efa2f3318c307ff9acafbb5.jpg" align="top"> CS 1.6
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/240/9052fa60c496a1c03383b27687ec50f4bf0f0e10.jpg" align="top"> CS:S
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/4465480/c42651245856bf11a1201a4b521040ae830f2b07.jpg" align="top"> CS:GO
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/500/428df26bc35b09319e31b1ffb712487b20b3245c.jpg" align="top"> Left 4 Dead **+** Left 4 Dead 2
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/70/95be6d131fc61f145797317ca437c9765f24b41c.jpg" align="top"> Half-Life 1
+  * <img src="https://cdn2.steamgriddb.com/icon/3fd33fca2c8309458ce87fc2777e51f6/32/32x32.png" align="top"> Postal 2 Multiplayer
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/40/c525f76c8bc7353db4fd74b128c4ae2028426c2a.jpg" align="top"> Deathmatch Classic
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/1280770/a40efa7f154decf48622a25f8b4fe9b67929d7e3.jpg" align="top"> Redmatch 2
 
-  **:feelsgood: Только в Secured-режиме:**
-  * <img src="https://cdn2.steamgriddb.com/icon/e1bd06c3f8089e7552aa0552cb387c92/8/32x32.png" align="top"> cs2
+  **:feelsgood: Только в Secured-режиме** _(за какие-то функции могут забанить)_:
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/730/8dbc71957312bbd3baea65848b545be9eae2a355.jpg" align="top"> CS 2
 
 </details>
 
