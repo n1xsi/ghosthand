@@ -10,6 +10,8 @@ from scripts.bunnyhop import bhop_instance
 from scripts.mrc import mrc_instance
 import scripts.panic
 
+from src.ui.overlay import fov_overlay_instance
+
 import dearpygui.dearpygui as dpg
 
 
@@ -141,6 +143,20 @@ def toggle_turn180(sender, app_data):
 def update_turn180_pixels(sender, app_data):
     turn180_instance.pixels = app_data
 
+# -------------------------- OVERLAY --------------------------
+def toggle_show_fov(sender, app_data):
+    aimpull_instance.show_fov = app_data
+
+
+def update_fov_color(sender, app_data):
+    # DearPyGui возвращает сырые float от 0.0 до 1.0 =>
+    # => умножаем их на 255, чтобы получить стандартный RGB (0-255)
+    r, g, b = map(lambda x: int(x * 255) if x <= 1.0 else int(x), app_data[:3])
+
+    hex_color = f"#{r:02X}{g:02X}{b:02X}"
+    aimpull_instance.fov_color = hex_color
+    print(f"[debug-UI] FOV Color set to: {hex_color}")
+
 # -------------------------- GUI SETUP --------------------------
 dpg.create_context()  # Инициализация DearPyGui
 
@@ -164,7 +180,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
             dpg.add_checkbox(label="AimPull", callback=toggle_aimpull)
             with dpg.group(tag="aimpull_settings_group", show=False):
                 dpg.add_spacer(height=5)
-                with dpg.child_window(height=125, border=True):
+                with dpg.child_window(height=205, border=True):
                     dpg.add_text("AimPull Settings", color=SOFT_PURPLE)
                     dpg.add_slider_float(
                         label="Smooth", 
@@ -178,10 +194,15 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
                         label="FOV",
                         default_value=aimpull_instance.fov,
                         min_value=10,
-                        max_value=200,
+                        max_value=600,
                         callback=update_fov
                     )
-                    dpg.add_text("Works while holding Left-Click", color=ADDITIONAL_BLACK)
+                    dpg.add_spacer(height=5)
+                    dpg.add_separator()
+                    dpg.add_spacer(height=5)
+                    dpg.add_checkbox(label="Draw FOV Circle", callback=toggle_show_fov)
+                    dpg.add_color_edit(label="FOV Color", default_value=(255, 255, 255, 255), no_alpha=True, callback=update_fov_color)
+                    dpg.add_text("Pulls to the red color while holding Left-Click.", color=ADDITIONAL_BLACK)
 
             dpg.add_checkbox(label="Pixel Trigger Bot", callback=toggle_pixel_trigger)
             with dpg.group(tag="trigger_settings_group", show=False):
@@ -394,6 +415,8 @@ if __name__ == "__main__":
     anti_aim_instance.start()
     fastzoom_instance.start()
     turn180_instance.start()
+
+    fov_overlay_instance.start()
 
     dpg.show_viewport()
     dpg.set_primary_window("Primary Window", True)
