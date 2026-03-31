@@ -1,5 +1,6 @@
 from scripts.pixel_triggerbot import pixel_trigger_instance
 from scripts.autopistol import autopistol_instance
+from scripts.watermark import watermark_instance
 from scripts.anti_aim import anti_aim_instance
 from scripts.fastzoom import fastzoom_instance
 from scripts.snaptap import snap_tap_instance
@@ -10,16 +11,17 @@ from scripts.bunnyhop import bhop_instance
 from scripts.mrc import mrc_instance
 import scripts.panic
 
-from src.ui.overlay import fov_overlay_instance
+from src.ui.overlay import overlay_instance
 
 import dearpygui.dearpygui as dpg
 
 
-# Переменные цветов
+# Глобальные переменные
 DEEP_PURPLE = (139, 0, 255, 255)
 SOFT_PURPLE = (163, 102, 255, 255)
 ACTIVE_PURPLE = (184, 102, 255, 255)
 ADDITIONAL_BLACK = (150, 150, 150, 200)
+VERSION = "v0.9 Dev Build"
 
 # -------------------------- CALLBACKS --------------------------
 
@@ -157,6 +159,11 @@ def update_fov_color(sender, app_data):
     aimpull_instance.fov_color = hex_color
     print(f"[debug-UI] FOV Color set to: {hex_color}")
 
+
+def toggle_watermark(sender, app_data):
+    watermark_instance.enabled = app_data
+    print(f"[debug-UI] Watermark is {'ON' if app_data else 'OFF'}")
+
 # -------------------------- GUI SETUP --------------------------
 dpg.create_context()  # Инициализация DearPyGui
 
@@ -165,7 +172,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
     # Заголовок
     with dpg.group(horizontal=True):
         dpg.add_text("GHOSTHAND", color=DEEP_PURPLE)
-        dpg.add_text("v0.9 | Dev Build", color=ADDITIONAL_BLACK)
+        dpg.add_text(VERSION, color=ADDITIONAL_BLACK)
         dpg.add_text("SYSTEM ACTIVE", tag="status_text", color=(50, 255, 50, 255), pos=(450, 8))
 
     dpg.add_spacer(height=5)
@@ -321,7 +328,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
         with dpg.tab(label="Visuals"):
             dpg.add_spacer(height=10)
             dpg.add_checkbox(label="Crosshair", enabled=False)
-            dpg.add_checkbox(label="Watermark", enabled=False)
+            dpg.add_checkbox(label="Watermark", callback=toggle_watermark)
             dpg.add_combo(label="UI Scale", items=["100%", "125%", "150%", "175%", "200%"], default_value="100%")
             dpg.add_combo(label="Theme", items=["Default", "Dark", "Purple"], default_value="Default")
 
@@ -424,7 +431,7 @@ if __name__ == "__main__":
     fastzoom_instance.start()
     turn180_instance.start()
 
-    fov_overlay_instance.start()
+    overlay_instance.start()
 
     dpg.show_viewport()
     dpg.set_primary_window("Primary Window", True)
