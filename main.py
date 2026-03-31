@@ -317,7 +317,15 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
 
             dpg.add_checkbox(label="Snap Tap", callback=toggle_snap_tap)
 
-        # Вкладка 4: Misc
+        # Вкладка 4: Visuals
+        with dpg.tab(label="Visuals"):
+            dpg.add_spacer(height=10)
+            dpg.add_checkbox(label="Crosshair", enabled=False)
+            dpg.add_checkbox(label="Watermark", enabled=False)
+            dpg.add_combo(label="UI Scale", items=["100%", "125%", "150%", "175%", "200%"], default_value="100%")
+            dpg.add_combo(label="Theme", items=["Default", "Dark", "Purple"], default_value="Default")
+
+        # Вкладка 5: Misc
         with dpg.tab(label="Misc"):
             dpg.add_spacer(height=10)
             dpg.add_checkbox(label="Secured Mode", enabled=False)
@@ -349,7 +357,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
                     dpg.add_text("Adjust the slider until you do exactly a 180 turn.", color=ADDITIONAL_BLACK)
 
 
-        # Вкладка 5: Keybinds
+        # Вкладка 6: Keybinds
         with dpg.tab(label="Keybinds"):
             dpg.add_spacer(height=10)
             dpg.add_text("Panic Key: PAUSE (toggle)")
