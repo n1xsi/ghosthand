@@ -164,6 +164,7 @@ def toggle_watermark(sender, app_data):
     watermark_instance.enabled = app_data
     print(f"[debug-UI] Watermark is {'ON' if app_data else 'OFF'}")
 
+
 # -------------------------- GUI SETUP --------------------------
 dpg.create_context()  # Инициализация DearPyGui
 
@@ -179,7 +180,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
 
     # ----- ВКЛАДКИ -----
     with dpg.tab_bar():
-        
+
         # Вкладка 1: Aim Assist
         with dpg.tab(label="Aim Assist"):
             dpg.add_spacer(height=10)
@@ -190,7 +191,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
                 with dpg.child_window(height=205, border=True):
                     dpg.add_text("AimPull Settings", color=SOFT_PURPLE)
                     dpg.add_slider_float(
-                        label="Smooth", 
+                        label="Smooth",
                         default_value=aimpull_instance.smooth,
                         min_value=0.1,
                         max_value=10.0,
@@ -225,13 +226,13 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
                         callback=update_pixel_trigger_reaction_delay
                     )
                     dpg.add_slider_int(
-                        label="Color Threshold", 
-                        default_value=pixel_trigger_instance.threshold, 
+                        label="Color Threshold",
+                        default_value=pixel_trigger_instance.threshold,
                         min_value=1,
                         max_value=100,
                         callback=update_pixel_trigger_threshold
                     )
-                    dpg.add_text("Hold L-ALT to scan.\nSmaller threshold = more sensitive trigger.", color=ADDITIONAL_BLACK)
+                    dpg.add_text("Hold L-ALT to pixel scan and lock the mouse.\nSmaller threshold = more sensitive trigger.", color=ADDITIONAL_BLACK)
 
             dpg.add_checkbox(label="AutoPistol", callback=toggle_autopistol)
             with dpg.group(tag="autopistol_settings_group", show=False):
@@ -284,7 +285,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
                     dpg.add_text("Flick Anti-Aim Settings", color=SOFT_PURPLE)
 
                     dpg.add_slider_float(
-                        label="Frequency (sec)", 
+                        label="Frequency (sec)",
                         default_value=anti_aim_instance.frequency,
                         min_value=0.02,
                         max_value=2.0,
@@ -293,7 +294,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
                     )
 
                     dpg.add_slider_int(
-                        label="Angle Strength", 
+                        label="Angle Strength",
                         default_value=anti_aim_instance.strength,
                         min_value=500,
                         max_value=10000,
@@ -354,7 +355,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
                 with dpg.child_window(height=125, border=True):
                     dpg.add_text("Turn Settings", color=SOFT_PURPLE)
                     dpg.add_slider_int(
-                        label="Distance (Pixels)", 
+                        label="Distance (Pixels)",
                         default_value=turn180_instance.pixels,
                         min_value=500,
                         max_value=10000,
@@ -362,7 +363,6 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
                     )
                     dpg.add_text("Press T to turn. Turn off your mouse acceleration.", color=ADDITIONAL_BLACK)
                     dpg.add_text("Adjust the slider until you do exactly a 180 turn.", color=ADDITIONAL_BLACK)
-
 
         # Вкладка 6: Keybinds
         with dpg.tab(label="Keybinds"):
