@@ -317,7 +317,7 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
                         label="Jump Delay (sec)",
                         default_value=bhop_instance.delay,
                         min_value=0.005,
-                        max_value=0.1,
+                        max_value=0.3,
                         callback=update_bhop_delay,
                         format="%.3f"
                     )
