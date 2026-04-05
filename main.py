@@ -416,7 +416,19 @@ with dpg.theme() as global_theme:
 if __name__ == "__main__":
     dpg.bind_theme(global_theme)
     dpg.set_global_font_scale(1.4)  # Увеличение всего UI в 1.4 раза
+
+    # Установка размеров окна и его параметров (неизменяемое, без рамки)
     dpg.create_viewport(title='ghosthand', width=600, height=420, resizable=False, decorated=True)
+
+    # Установка иконки
+    try:
+        icon_path = "assets/icon.ico"
+        dpg.set_viewport_small_icon(icon_path)
+        dpg.set_viewport_large_icon(icon_path)
+    except Exception as e:
+        print(f"[debug-UI] Не удалось загрузить иконку: {e}")
+
+
     dpg.setup_dearpygui()
 
     # ----- Запуск скриптов -----
