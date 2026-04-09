@@ -21,6 +21,11 @@ DEEP_PURPLE = (139, 0, 255, 255)
 SOFT_PURPLE = (163, 102, 255, 255)
 ACTIVE_PURPLE = (184, 102, 255, 255)
 ADDITIONAL_BLACK = (150, 150, 150, 200)
+
+BASE_VIEWPORT_WIDTH = 600
+BASE_VIEWPORT_HEIGHT = 420
+
+UI_SCALE = 1.4
 VERSION = "v0.9 Dev Build"
 
 # -------------------------- CALLBACKS --------------------------
@@ -145,6 +150,28 @@ def toggle_turn180(sender, app_data):
 def update_turn180_pixels(sender, app_data):
     turn180_instance.pixels = app_data
 
+# ----- ui scale -----
+def update_ui_scale(sender, app_data):
+    global UI_SCALE
+
+    scale_float = float(app_data.replace("%", "")) / 100
+
+    if scale_float == UI_SCALE:
+        return
+
+    UI_SCALE = scale_float
+    dpg.set_global_font_scale(scale_float)
+
+    # BASE_VIEWPORT_* - это размер при дефолтном 1.4, поэтому сначала
+    # нужно привести к 100% (÷ 1.4), затем * на нужный scale
+    new_width  = int(BASE_VIEWPORT_WIDTH / 1.4 * scale_float)
+    new_height = int(BASE_VIEWPORT_HEIGHT / 1.4 * scale_float)
+
+    dpg.set_viewport_width(new_width)
+    dpg.set_viewport_height(new_height)
+
+    print(f"[debug-UI] UI Scale set to {app_data} ({new_width}x{new_height})")
+
 # -------------------------- OVERLAY --------------------------
 def toggle_show_fov(sender, app_data):
     aimpull_instance.show_fov = app_data
@@ -168,7 +195,7 @@ def toggle_watermark(sender, app_data):
 # -------------------------- GUI SETUP --------------------------
 dpg.create_context()  # Инициализация DearPyGui
 
-with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_move=True, no_collapse=True, no_title_bar=True):
+with dpg.window(tag="Primary Window", width=BASE_VIEWPORT_WIDTH, height=BASE_VIEWPORT_HEIGHT , no_resize=True, no_move=True, no_collapse=True, no_title_bar=True):
 
     # Заголовок
     with dpg.group(horizontal=True):
@@ -330,7 +357,12 @@ with dpg.window(tag="Primary Window", width=680, height=480, no_resize=True, no_
             dpg.add_spacer(height=10)
             dpg.add_checkbox(label="Crosshair", enabled=False)
             dpg.add_checkbox(label="Watermark", callback=toggle_watermark)
-            dpg.add_combo(label="UI Scale", items=["100%", "125%", "150%", "175%", "200%"], default_value="100%")
+            dpg.add_combo(
+                label="UI Scale", 
+                items=["100%", "125%", "140%", "150%", "175%", "200%"], 
+                default_value="140%", 
+                callback=update_ui_scale
+            )
             dpg.add_combo(label="Theme", items=["Default", "Dark", "Purple"], default_value="Default")
 
         # Вкладка 5: Misc
@@ -415,10 +447,10 @@ with dpg.theme() as global_theme:
 # -------------------------- ЗАПУСК --------------------------
 if __name__ == "__main__":
     dpg.bind_theme(global_theme)
-    dpg.set_global_font_scale(1.4)  # Увеличение всего UI в 1.4 раза
+    dpg.set_global_font_scale(UI_SCALE)
 
     # Установка размеров окна и его параметров (неизменяемое, без рамки)
-    dpg.create_viewport(title='ghosthand', width=600, height=420, resizable=False, decorated=True)
+    dpg.create_viewport(title='ghosthand', width=BASE_VIEWPORT_WIDTH, height=BASE_VIEWPORT_HEIGHT, resizable=False, decorated=True)
 
     # Установка иконки
     try:
