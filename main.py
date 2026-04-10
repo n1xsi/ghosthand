@@ -25,6 +25,9 @@ ADDITIONAL_BLACK = (150, 150, 150, 200)
 BASE_VIEWPORT_WIDTH = 600
 BASE_VIEWPORT_HEIGHT = 420
 
+BASE_STATUS_TEXT_POS = (440, 8)
+STATUS_RIGHT_MARGIN = 160  # px при дефолтном 140%
+
 UI_SCALE = 1.4
 VERSION = "v0.9 Dev Build"
 
@@ -151,6 +154,9 @@ def update_turn180_pixels(sender, app_data):
     turn180_instance.pixels = app_data
 
 # ----- ui scale -----
+to_new_size = lambda variable, scale: int(variable / 1.4 * scale)  # Деление на базовый мастаб (1.4)
+
+
 def update_ui_scale(sender, app_data):
     global UI_SCALE
 
@@ -162,13 +168,14 @@ def update_ui_scale(sender, app_data):
     UI_SCALE = scale_float
     dpg.set_global_font_scale(scale_float)
 
-    # BASE_VIEWPORT_* - это размер при дефолтном 1.4, поэтому сначала
-    # нужно привести к 100% (÷ 1.4), затем * на нужный scale
-    new_width  = int(BASE_VIEWPORT_WIDTH / 1.4 * scale_float)
-    new_height = int(BASE_VIEWPORT_HEIGHT / 1.4 * scale_float)
+    new_width = to_new_size(BASE_VIEWPORT_WIDTH, scale_float)
+    new_height = to_new_size(BASE_VIEWPORT_HEIGHT, scale_float)
 
     dpg.set_viewport_width(new_width)
     dpg.set_viewport_height(new_height)
+
+    new_status_text_pos = new_width - to_new_size(STATUS_RIGHT_MARGIN, scale_float)
+    dpg.configure_item("status_text", pos=(new_status_text_pos, BASE_STATUS_TEXT_POS[1]))
 
     print(f"[debug-UI] UI Scale set to {app_data} ({new_width}x{new_height})")
 
@@ -201,7 +208,7 @@ with dpg.window(tag="Primary Window", width=BASE_VIEWPORT_WIDTH, height=BASE_VIE
     with dpg.group(horizontal=True):
         dpg.add_text("GHOSTHAND", color=DEEP_PURPLE)
         dpg.add_text(VERSION, color=ADDITIONAL_BLACK)
-        dpg.add_text("SYSTEM ACTIVE", tag="status_text", color=(50, 255, 50, 255), pos=(450, 8))
+        dpg.add_text("SYSTEM ACTIVE", tag="status_text", color=(50, 255, 50, 255), pos=BASE_STATUS_TEXT_POS)
 
     dpg.add_spacer(height=5)
 
