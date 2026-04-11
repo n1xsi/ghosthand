@@ -29,7 +29,7 @@ BASE_STATUS_TEXT_POS = (440, 8)
 STATUS_RIGHT_MARGIN = 160  # px при дефолтном 140%
 
 UI_SCALE = 1.4
-VERSION = "v0.9 Dev Build"
+VERSION = "v0.9.1 Dev Build"
 
 # -------------------------- CALLBACKS --------------------------
 
