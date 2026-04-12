@@ -78,6 +78,23 @@
   * Некоторые прочие игры с Vanguard / EAC / BattlEye.
 </details>
 
+## 🚀 Установка и запуск
+Пока софт находится в разработке и запустить его можно только следующим образом:
+
+1. Склонируйте репозиторий
+  ```bash
+  git clone https://github.com/n1xsi/ghosthand.git
+  cd ghosthand
+  ```
+2. Установите необходимые библиотеки (рекомендуется использовать виртуальное окружение venv):
+  ```bash
+  pip install dearpygui mss numpy
+  ```
+3. Запустите IDE/CMD главный файл от имени Администратора:
+  ```bash
+  python main.py
+  ```
+
 ## ⚙ Стек технологий
 * [Python 3.12.12](https://www.python.org/downloads/release/python-31212/) – язык программы
 * [DearPyGui](https://dearpygui.readthedocs.io/) – быстрый GPU-ускоренный интерфейс
