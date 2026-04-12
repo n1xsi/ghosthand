@@ -45,9 +45,9 @@
 Функции включаются через чекбоксы, у каждой функции свой бинд (который можно посмотреть во вкладке `Keybinds`), значения в функциях можно менять через ползунок или нажав по ползунку Ctrl+LMB и введя значение.
 
 ## 🎮 Совместимость с играми
-В теории **GhostHand** полностью совместим со всеми играми (ибо софт имитирует нажатия клавиш и просто сканит экран), но вот точный список проверенных игр (он будет пополняться):
+Так как софт использует WinAPI, теоретически он будет работать **везде**. Ниже список протестированных игр (он будет пополняться):
 <details>
-  <summary>🤝 Проверенный список совместимых игр</summary>
+  <summary>🤝 Список проверенных игр </summary>
   <br>
 
   **:accessibility: Полная совместимость** _(корректно работает бо́льшая часть функций)_:
@@ -62,13 +62,15 @@
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/706990/84e0869208df5df1d65605ebb5bb0b95d6f2d596.jpg" align="top"> BLOCKPOST (LEGACY)
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/20/38ea7ebe3c1abbbbf4eabdbef174c41a972102b9.jpg" align="top"> TF Classic
 
-  **:feelsgood: Только в Secured-режиме** _(за какие-то функции могут забанить)_:
+  **:feelsgood: Только в Secured-режиме** _(высокий риск детекта античитом за какие-то функции)_:
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/730/8dbc71957312bbd3baea65848b545be9eae2a355.jpg" align="top"> CS 2
-
+  * Некоторые прочие игры с Vanguard / EAC / BattlEye.
 </details>
 
 ## ⚙ Стек технологий
-* [Python 3.12.12](https://www.python.org/downloads/release/python-31212/)
-* [DearPyGui](https://dearpygui.readthedocs.io/)
-* [ctypes (WinAPI)](https://docs.python.org/3/library/ctypes.html)
-* [threading](https://docs.python.org/3/library/threading.html)
+* [Python 3.12.12](https://www.python.org/downloads/release/python-31212/) – язык программы
+* [DearPyGui](https://dearpygui.readthedocs.io/) – быстрый GPU-ускоренный интерфейс
+* [ctypes (WinAPI)](https://docs.python.org/3/library/ctypes.html) – низкоуровневая эмуляция клавиатуры/мыши через SendInput
+* [threading](https://docs.python.org/3/library/threading.html) – многопоточность для считывания разных клавиш
+* [mss](https://python-mss.readthedocs.io/stable/) & [numpy](https://numpy.org/doc/stable/user/index.html#user) – cверхбыстрый захват экрана и матричные вычисления для AimPull
+* [tkinter](https://docs.python.org/3/library/tkinter.html) – gрозрачные Click-Through оверлеи поверх экрана
