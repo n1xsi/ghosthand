@@ -8,21 +8,27 @@
 
 </h1>
 
-**GhostHand** – это универсальный софт с набором автоматизированных скриптов для помощи во всех FPS-играх.
+**GhostHand** – это универсальный external-софт с набором автоматизированных макросов и скриптов для помощи во всех FPS-играх.
 
 Проект является _external assistaint tool'ом_, который помогает в прицеливании, передвижении и т.д.
 
 > [!WARNING]
-> Repo still in development. _**Everything is in its "raw" form.**_
+> 🚧 **Статус проекта:** Находится в активной разработке. Весь код представлен в "сыром" виде.
 > 
-> **Disclaimer: This project is created for educational purposes and programming practice only. The author is not responsible for any account bans or violations of Terms of Service in any games. USE AT YOUR OWN RISK!**
+> ⚖️ **Disclaimer:** This project is created for educational purposes and programming practice only. The author is not responsible for any account bans or violations of Terms of Service in any games. **USE AT YOUR OWN RISK!**
 
 > [!Important]
-> Данный софт – это заскриптованная имитация нажатий клавишей клавиатуры/мыши, поэтому какие-то функции могут работать дёргано, некорректно или вовсе мешать (в зависимости от ситуации или игры).
+> Данный софт – это заскриптованная имитация ввода клавишей клавиатуры/мыши (WinAPI) и чтение пикселей экрана, поэтому какие-то функции могут работать дёргано, некорректно или вовсе мешать (в зависимости от ситуации, игры или производительности ПК).
 > 
-> Для лучшей работы программы её **рекомендуется** запускать от имени администратора, а в играх использовать режим отображения окна _"Полноэкранный в окне"_ или _"Оконный"_.
+> * 👑 **Обязательно** запускайте консоль/IDE от имени **Администратора**.
+> * 🪟 В играх используйте режим экрана _"Полноэкранный в окне" (Borderless)_ или _"Оконный"_. В эксклюзивном Fullscreen оверлей и чтение экрана работать не будут!
 
-## ✅ Функции, реализованные на данный момент
+## 🧩 Функционал
+
+<p align="center">
+  <img src="https://i.imgur.com/y0uBAXS.png" align="center" width="40%">
+</p>
+
 Имеется уже готовое меню с следующими рабочими **настраиваемыми** функциями:
 * AimPull _(тянет прицел к определённому цвету + FOV circle поверх игры)_
 * Autopistol _(быстрый автоповтор ЛКМ)_
