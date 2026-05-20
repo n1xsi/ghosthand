@@ -1,4 +1,7 @@
-from src.core.input_sim import is_key_pressed, MouseClick, ClickKey, DIK_Q, VK_MIDBUTTON, MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP
+from src.core.input_sim import (
+    is_key_pressed, MouseClick, ClickKey,
+    DIK_Q, VK_MIDBUTTON, MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP,
+)
 import threading
 import time
 
@@ -25,7 +28,11 @@ class FastZoomCore:
             if is_key_pressed(VK_MIDBUTTON):
 
                 # ПКМ (Прицел)
-                MouseClick(delay=0.01, m_down=MOUSEEVENTF_RIGHTDOWN, m_up=MOUSEEVENTF_RIGHTUP)
+                MouseClick(
+                    delay=0.01,
+                    m_down=MOUSEEVENTF_RIGHTDOWN,
+                    m_up=MOUSEEVENTF_RIGHTUP
+                )
                 time.sleep(self.macro_delay)
 
                 # ЛКМ (Выстрел)
@@ -40,11 +47,11 @@ class FastZoomCore:
                     # Нажатие 'Q' (Свап обратно на AWP)
                     ClickKey(DIK_Q, delay=0.01)
 
-                # Защита от спама (чтобы макрос не сработал 10 раз, пока ты держишь кнопку)
+                # Защита от спама при удержании кнопки
                 time.sleep(0.5)
             else:
                 time.sleep(0.01)
 
 
-# Экземпляр класса BhopCore для импорта в меню
+# Экземпляр класса FastZoomCore для импорта в меню
 fastzoom_instance = FastZoomCore()

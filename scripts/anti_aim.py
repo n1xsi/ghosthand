@@ -6,11 +6,10 @@ import time
 class AntiAimCore:
     def __init__(self):
         self.running = False
-        self.enabled = False  # Разрешено ли использовать функцию (Галочка в меню)
-        self.active = False   # Включить ли антиаимы (Клавиша F)
+        self.enabled = False  # Галочка в меню
+        self.active = False   # Переключение клавишей F
 
-        # Настройки из меню
-        self.frequency = 0.15  # Как часто дергается голова (секунды)
+        self.frequency = 0.15  # Как часто дёргается голова (секунды)
         self.strength = 4500   # Угол/Сила рывка (в пикселях мыши)
 
     def start(self):
@@ -25,40 +24,39 @@ class AntiAimCore:
                 time.sleep(0.1)
                 continue
 
-            current_key_state = is_key_pressed(VK_F)  # Проверка нажатия клавиши F
+            current_key_state = is_key_pressed(VK_F)
+
             # Если клавиша ТОЛЬКО ЧТО нажата (ранее была отпущена)
             if current_key_state and not key_was_pressed:
-                # Переключение состояния (True -> False -> True)
                 self.active = not self.active
                 print(f"[Core] Anti-Aim Togged: {'ON' if self.active else 'OFF'}")
                 key_was_pressed = True
 
-            # Если клавишу отпустили - сбрасываем флаг
+            # Если клавишу отпустили - сброс флага
             elif not current_key_state:
                 key_was_pressed = False
 
             if self.active:
                 # Рассчитывание вектора сдвига:
-                # По оси Y берётся 1/3 от X (4500 и 1500), чтобы персонаж смотрел по диагонали вниз.
+                # Y = 1/3 от X => персонаж смотрит по диагонали вниз
                 dx, dy = int(self.strength), int(self.strength // 3)
 
                 # РЫВОК
                 MouseMove(dx, dy)
 
                 # Ожидание 15 миллисекунд
-                # Это время нужно игровому движку, чтобы зарегистрировать "сломанный" угол на сервере
+                # Время, чтобы движок зарегистрировал сломанный угол
                 time.sleep(0.015)
 
-                # ВОЗВРАТ (Возвращение прицела на место)
+                # ВОЗВРАТ (прицела на место)
                 MouseMove(-dx, -dy)
 
-                # Ожидание до следующего тика (Настройка частоты)
+                # Ожидание до следующего тика
                 time.sleep(self.frequency)
             else:
                 # Если функция разрешена (галочка стоит), но выключена клавишей F
-                # Спим чуть-чуть, чтобы быстро среагировать на нажатие F
                 time.sleep(0.005)
 
 
-# Экземпляр класса BhopCore для импорта в меню
+# Экземпляр класса AntiAimCore для импорта в меню
 anti_aim_instance = AntiAimCore()
