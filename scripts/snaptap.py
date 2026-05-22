@@ -1,8 +1,17 @@
-import threading
+"""
+SnapTap — приоритет последнего нажатого направления (A/D).
+ 
+Реализован через low-level keyboard hook (WH_KEYBOARD_LL).
+Перехватывает нажатия A/D и при конфликте направлений отменяет старое,
+посылая синтетический KeyUp с маркером EXTRA_MARKER (чтобы не зациклиться).
+"""
 import ctypes
 import ctypes.wintypes
+import threading
 import traceback
+
 from src.core import input_sim
+from src.core.input_sim import HOOKPROC, KBDLLHOOKSTRUCT
 
 # ─── Константы ──────────────────────────────────────────────
 WH_KEYBOARD_LL = 13
@@ -16,11 +25,28 @@ VK_D = 0x44
 SCAN_A = 0x1E
 SCAN_D = 0x20
 
+# Маркер синтетических событий (чтобы хук пропускал свои же нажатия)
 EXTRA_MARKER = 0x5441
 
-# ─── ctypes-структуры ──────────────────────────────────────
+# ── WinAPI ────────────────────────────────────────────────────────
 user32 = ctypes.windll.user32
 
+user32.SetWindowsHookExW.argtypes = [
+    ctypes.c_int, HOOKPROC, ctypes.wintypes.HINSTANCE, ctypes.wintypes.DWORD,
+]
+user32.SetWindowsHookExW.restype = ctypes.c_void_p
+
+user32.CallNextHookEx.argtypes = [
+    ctypes.c_void_p, ctypes.c_int, ctypes.wintypes.WPARAM, ctypes.wintypes.LPARAM,
+]
+user32.CallNextHookEx.restype = ctypes.c_long
+
+user32.SendInput.argtypes = [ctypes.c_uint, ctypes.c_void_p, ctypes.c_int]
+user32.SendInput.restype = ctypes.c_uint
+
+
+# ── Структуры SendInput (нужны для _send_key) ─────────────────────
+# Используются wintypes-версии, совместимые с user32.SendInput выше
 
 class KEYBDINPUT(ctypes.Structure):
     _fields_ = [
@@ -31,9 +57,9 @@ class KEYBDINPUT(ctypes.Structure):
         ("dwExtraInfo", ctypes.c_void_p),
     ]
 
-# ЭТУ СТРУКТУРУ НЕ УДАЛЯТЬ! Нужна для правильного размера памяти Union
-# Без неё нихера не работает крч
+
 class MOUSEINPUT(ctypes.Structure):
+    # ВАЖНАЯ структура для правильного размера Union
     _fields_ = [
         ("dx",          ctypes.c_long),
         ("dy",          ctypes.c_long),
@@ -67,29 +93,7 @@ class INPUT(ctypes.Structure):
     ]
 
 
-class KBDLLHOOKSTRUCT(ctypes.Structure):
-    _fields_ = [
-        ("vkCode",      ctypes.wintypes.DWORD),
-        ("scanCode",    ctypes.wintypes.DWORD),
-        ("flags",       ctypes.wintypes.DWORD),
-        ("time",        ctypes.wintypes.DWORD),
-        ("dwExtraInfo", ctypes.c_void_p),
-    ]
-
-
-HOOKPROC = ctypes.CFUNCTYPE(ctypes.c_long, ctypes.c_int, ctypes.wintypes.WPARAM, ctypes.wintypes.LPARAM)
-
-user32.SetWindowsHookExW.argtypes = [ctypes.c_int, HOOKPROC, ctypes.wintypes.HINSTANCE, ctypes.wintypes.DWORD]
-user32.SetWindowsHookExW.restype = ctypes.c_void_p
-
-user32.CallNextHookEx.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.wintypes.WPARAM, ctypes.wintypes.LPARAM]
-user32.CallNextHookEx.restype = ctypes.c_long
-
-user32.SendInput.argtypes = [ctypes.c_uint, ctypes.POINTER(INPUT), ctypes.c_int]
-user32.SendInput.restype = ctypes.c_uint
-
-
-# ─── Логика Snap Tap ───────────────────────────────────────
+# ── Логика Snap Tap ───────────────────────────────────────────────
 class SnapTapCore:
     def __init__(self):
         self.running = False
@@ -106,8 +110,7 @@ class SnapTapCore:
 
     def _send_key(self, vk: int, scan: int, up: bool = False):
         flags = 0 if not up else KEYEVENTF_KEYUP
-        ki = KEYBDINPUT(wVk=vk, wScan=scan, dwFlags=flags,
-                        time=0, dwExtraInfo=EXTRA_MARKER)
+        ki = KEYBDINPUT(wVk=vk, wScan=scan, dwFlags=flags, time=0, dwExtraInfo=EXTRA_MARKER)
 
         inp = INPUT()
         inp.type = INPUT_KEYBOARD
@@ -119,7 +122,7 @@ class SnapTapCore:
             print("[debug:SnapTap] SendInput failed!")
 
     def _hook_thread(self):
-        # ОПРЕДЕЛЯЕНИЕ ФУНКЦИИ ВНУТРИ ПОТОКА
+        # ОПРЕДЕЛЕНИЕ ФУНКЦИИ ВНУТРИ ПОТОКА
         # Это решает проблему с 'self', чтобы сигнатура принимала ровно 3 аргумента
         def keyboard_proc(nCode, wParam, lParam):
             try:
@@ -132,19 +135,17 @@ class SnapTapCore:
                 kb = ctypes.cast(lParam, ctypes.POINTER(KBDLLHOOKSTRUCT)).contents
                 vk = kb.vkCode
 
-                # Пропускаем наши симуляции
-                # В Python 64-bit значения dwExtraInfo могут кастоваться криво,
-                # поэтому надежнее проверить оба варианта каста
-                if kb.dwExtraInfo == EXTRA_MARKER or kb.dwExtraInfo == getattr(ctypes.c_void_p(EXTRA_MARKER), 'value', None):
+                # Пропускаем собственные синтетические события по маркеру
+                marker_value = getattr(ctypes.c_void_p(EXTRA_MARKER), 'value', None)
+                if kb.dwExtraInfo in (EXTRA_MARKER, marker_value):
                     return user32.CallNextHookEx(self.hook_handle, nCode, wParam, lParam)
 
-                # Если выключен
                 if not self.enabled:
                     self.is_a_pressed = False
                     self.is_d_pressed = False
                     return user32.CallNextHookEx(self.hook_handle, nCode, wParam, lParam)
 
-                # ── A ───────────────────────────────────────────────────
+                # ── A ──────────────────────────────────────────────
                 if vk == VK_A:
                     if wParam == WM_KEYDOWN:
                         if not self.is_a_pressed:
@@ -153,7 +154,6 @@ class SnapTapCore:
                                 self._send_key(VK_D, SCAN_D, up=True)
                             self._send_key(VK_A, SCAN_A, up=False)
                         return 1
-
                     elif wParam == WM_KEYUP:
                         self.is_a_pressed = False
                         self._send_key(VK_A, SCAN_A, up=True)
@@ -161,7 +161,7 @@ class SnapTapCore:
                             self._send_key(VK_D, SCAN_D, up=False)
                         return 1
 
-                # ── D ───────────────────────────────────────────────────
+                # ── D ──────────────────────────────────────────────
                 elif vk == VK_D:
                     if wParam == WM_KEYDOWN:
                         if not self.is_d_pressed:
@@ -170,7 +170,6 @@ class SnapTapCore:
                                 self._send_key(VK_A, SCAN_A, up=True)
                             self._send_key(VK_D, SCAN_D, up=False)
                         return 1
-
                     elif wParam == WM_KEYUP:
                         self.is_d_pressed = False
                         self._send_key(VK_D, SCAN_D, up=True)
@@ -185,8 +184,7 @@ class SnapTapCore:
             return user32.CallNextHookEx(self.hook_handle, nCode, wParam, lParam)
 
         self.c_callback = HOOKPROC(keyboard_proc)
-        self.hook_handle = user32.SetWindowsHookExW(
-            WH_KEYBOARD_LL, self.c_callback, None, 0)
+        self.hook_handle = user32.SetWindowsHookExW(WH_KEYBOARD_LL, self.c_callback, None, 0)
 
         if not self.hook_handle:
             print("[debug:SnapTap] Failed to install Snap Tap hook!")
@@ -196,6 +194,7 @@ class SnapTapCore:
         while user32.GetMessageW(ctypes.byref(msg), None, 0, 0) > 0:
             user32.TranslateMessage(ctypes.byref(msg))
             user32.DispatchMessageW(ctypes.byref(msg))
+
 
 # Экземпляр класса SnapTapCore для импорта в меню
 snap_tap_instance = SnapTapCore()

@@ -88,6 +88,17 @@ class POINT(ctypes.Structure):
     _fields_ = [("x", ctypes.c_long), ("y", ctypes.c_long)]
 
 
+class KBDLLHOOKSTRUCT(ctypes.Structure):
+    """Структура для low-level keyboard hook (используется в SnapTap)."""
+    _fields_ = [
+        ("vkCode",      ctypes.wintypes.DWORD),
+        ("scanCode",    ctypes.wintypes.DWORD),
+        ("flags",       ctypes.wintypes.DWORD),
+        ("time",        ctypes.wintypes.DWORD),
+        ("dwExtraInfo", ctypes.c_void_p),
+    ]
+
+
 # Тип callback-функции для SetWindowsHookEx (__stdcall, как требует WinAPI)
 HOOKPROC = ctypes.WINFUNCTYPE(
     ctypes.c_long,
