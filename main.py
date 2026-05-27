@@ -7,7 +7,7 @@ from scripts.autopistol import autopistol_instance
 from scripts.bunnyhop import bhop_instance
 from scripts.fastzoom import fastzoom_instance
 from scripts.mrc import mrc_instance
-# from scripts.panic import panic_instance
+from scripts.panic import panic_instance
 from scripts.pixel_triggerbot import pixel_trigger_instance
 from scripts.snaptap import snap_tap_instance
 from scripts.turn180 import turn180_instance
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     for script in _SCRIPTS:
         script.start()
 
-    # panic_instance.start()
+    panic_instance.start()
     overlay_instance.start()
 
     dpg.show_viewport()

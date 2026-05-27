@@ -116,7 +116,7 @@ class MasterOverlay:
             # ---------------- WATERMARK ----------------
             if watermark_instance.enabled:
                 # Формирование ТРИ части текста
-                prefix_str = "GHOSTHAND | v0.9.1 Dev Build | "
+                prefix_str = "GHOSTHAND | v0.9.8 Dev Build | "
 
                 if input_sim.GLOBAL_PAUSE:
                     status_str = "GLOBAL PAUSE"
