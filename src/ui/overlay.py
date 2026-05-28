@@ -1,6 +1,7 @@
 from scripts.watermark import watermark_instance
 from scripts.aimpull import aimpull_instance
 from src.core import input_sim
+from src.config import VERSION
 
 import tkinter as tk
 import threading
@@ -116,7 +117,7 @@ class MasterOverlay:
             # ---------------- WATERMARK ----------------
             if watermark_instance.enabled:
                 # Формирование ТРИ части текста
-                prefix_str = "GHOSTHAND | v0.9.8 Dev Build | "
+                prefix_str = f"GHOSTHAND | {VERSION} | "
 
                 if input_sim.GLOBAL_PAUSE:
                     status_str = "GLOBAL PAUSE"
