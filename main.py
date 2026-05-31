@@ -14,7 +14,7 @@ from scripts.turn180 import turn180_instance
 
 from src.config import BASE_VIEWPORT_WIDTH, BASE_VIEWPORT_HEIGHT, UI_SCALE
 from src.ui.gui import build_gui
-# from src.ui.theme import create_theme
+from src.ui.theme import create_theme
 from src.ui.overlay import overlay_instance
 
 # Все скрипты, у которых вызывается .start()
@@ -35,8 +35,8 @@ if __name__ == "__main__":
     dpg.create_context()
     build_gui()
 
-    # theme = create_theme()
-    # dpg.bind_theme(theme)
+    theme = create_theme()
+    dpg.bind_theme(theme)
     dpg.set_global_font_scale(UI_SCALE)
 
     dpg.create_viewport(
