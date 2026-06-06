@@ -1,21 +1,18 @@
-import threading
 import time
 
 import dearpygui.dearpygui as dpg
 
+from src.core.base import ScriptBase
 from src.core import input_sim
 
 
-class PanicCore:
+class PanicCore(ScriptBase):
     """
     Panic key (глобальная пауза) — слушает 'PAUSE/Break' и переключает input_sim.GLOBAL_PAUSE.
 
     Использует GetAsyncKeyState напрямую (не через is_key_pressed),
     чтобы сама пауза не блокировала чтение своей же кнопки.
     """
-
-    def start(self) -> None:
-        threading.Thread(target=self._loop, daemon=True).start()
 
     def _loop(self) -> None:
         was_pressed = False
@@ -27,7 +24,6 @@ class PanicCore:
                 input_sim.GLOBAL_PAUSE = not input_sim.GLOBAL_PAUSE
                 was_pressed = True
                 self._update_ui(input_sim.GLOBAL_PAUSE)
-
             elif not current:
                 was_pressed = False
 
