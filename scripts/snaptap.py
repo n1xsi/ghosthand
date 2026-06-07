@@ -7,9 +7,9 @@ SnapTap — приоритет последнего нажатого напра�
 """
 import ctypes
 import ctypes.wintypes
-import threading
 import traceback
 
+from src.core.base import ScriptBase
 from src.core import input_sim
 from src.core.input_sim import HOOKPROC, KBDLLHOOKSTRUCT
 
@@ -20,10 +20,8 @@ WM_KEYUP = 0x0101
 INPUT_KEYBOARD = 1
 KEYEVENTF_KEYUP = 0x0002
 
-VK_A = 0x41
-VK_D = 0x44
-SCAN_A = 0x1E
-SCAN_D = 0x20
+VK_A = 0x41; SCAN_A = 0x1E
+VK_D = 0x44; SCAN_D = 0x20
 
 # Маркер синтетических событий (чтобы хук пропускал свои же нажатия)
 EXTRA_MARKER = 0x5441
@@ -45,10 +43,10 @@ user32.SendInput.argtypes = [ctypes.c_uint, ctypes.c_void_p, ctypes.c_int]
 user32.SendInput.restype = ctypes.c_uint
 
 
-# ── Структуры SendInput (нужны для _send_key) ─────────────────────
+# ── Структуры SendInput (для _send_key) ─────────────────────
 # Используются wintypes-версии, совместимые с user32.SendInput выше
 
-class KEYBDINPUT(ctypes.Structure):
+class _KEYBDINPUT(ctypes.Structure):
     _fields_ = [
         ("wVk",         ctypes.wintypes.WORD),
         ("wScan",       ctypes.wintypes.WORD),
@@ -58,7 +56,7 @@ class KEYBDINPUT(ctypes.Structure):
     ]
 
 
-class MOUSEINPUT(ctypes.Structure):
+class _MOUSEINPUT(ctypes.Structure):
     # ВАЖНАЯ структура для правильного размера Union
     _fields_ = [
         ("dx",          ctypes.c_long),
@@ -70,7 +68,7 @@ class MOUSEINPUT(ctypes.Structure):
     ]
 
 
-class HARDWAREINPUT(ctypes.Structure):
+class _HARDWAREINPUT(ctypes.Structure):
     _fields_ = [
         ("uMsg",    ctypes.wintypes.DWORD),
         ("wParamL", ctypes.wintypes.WORD),
@@ -80,13 +78,13 @@ class HARDWAREINPUT(ctypes.Structure):
 
 class _INPUT_UNION(ctypes.Union):
     _fields_ = [
-        ("mi", MOUSEINPUT),
-        ("ki", KEYBDINPUT),
-        ("hi", HARDWAREINPUT),
+        ("mi", _MOUSEINPUT),
+        ("ki", _KEYBDINPUT),
+        ("hi", _HARDWAREINPUT),
     ]
 
 
-class INPUT(ctypes.Structure):
+class _INPUT(ctypes.Structure):
     _fields_ = [
         ("type",  ctypes.wintypes.DWORD),
         ("union", _INPUT_UNION),
@@ -94,34 +92,30 @@ class INPUT(ctypes.Structure):
 
 
 # ── Логика Snap Tap ───────────────────────────────────────────────
-class SnapTapCore:
+class SnapTapCore(ScriptBase):
     def __init__(self):
-        self.running = False
-        self.enabled = False
+        super().__init__()
 
         self.is_a_pressed = False
         self.is_d_pressed = False
         self.hook_handle = None
         self.c_callback = None
 
-    def start(self):
-        self.running = True
-        threading.Thread(target=self._hook_thread, daemon=True).start()
-
     def _send_key(self, vk: int, scan: int, up: bool = False):
-        flags = 0 if not up else KEYEVENTF_KEYUP
-        ki = KEYBDINPUT(wVk=vk, wScan=scan, dwFlags=flags, time=0, dwExtraInfo=EXTRA_MARKER)
-
-        inp = INPUT()
-        inp.type = INPUT_KEYBOARD
+        ki = _KEYBDINPUT(
+            wVk=vk, wScan=scan,
+            dwFlags=KEYEVENTF_KEYUP if up else 0,
+            time=0, dwExtraInfo=EXTRA_MARKER,
+        )
+        inp = _INPUT(type=INPUT_KEYBOARD)
         inp.union.ki = ki
 
         # Если SendInput возвращает 0, значит произошла ошибка на уровне Windows
-        res = user32.SendInput(1, ctypes.byref(inp), ctypes.sizeof(INPUT))
+        res = user32.SendInput(1, ctypes.byref(inp), ctypes.sizeof(_INPUT))
         if res == 0:
             print("[debug:SnapTap] SendInput failed!")
 
-    def _hook_thread(self):
+    def _loop(self):
         # ОПРЕДЕЛЕНИЕ ФУНКЦИИ ВНУТРИ ПОТОКА
         # Это решает проблему с 'self', чтобы сигнатура принимала ровно 3 аргумента
         def keyboard_proc(nCode, wParam, lParam):
@@ -141,8 +135,7 @@ class SnapTapCore:
                     return user32.CallNextHookEx(self.hook_handle, nCode, wParam, lParam)
 
                 if not self.enabled:
-                    self.is_a_pressed = False
-                    self.is_d_pressed = False
+                    self.is_a_pressed = self.is_d_pressed = False
                     return user32.CallNextHookEx(self.hook_handle, nCode, wParam, lParam)
 
                 # ── A ──────────────────────────────────────────────
@@ -178,7 +171,7 @@ class SnapTapCore:
                         return 1
 
             except Exception as e:
-                print(f"[debug:SnapTap] Error in hook: {e}")
+                print(f"[debug:SnapTap] Hook error: {e}")
                 traceback.print_exc()
 
             return user32.CallNextHookEx(self.hook_handle, nCode, wParam, lParam)
@@ -187,7 +180,7 @@ class SnapTapCore:
         self.hook_handle = user32.SetWindowsHookExW(WH_KEYBOARD_LL, self.c_callback, None, 0)
 
         if not self.hook_handle:
-            print("[debug:SnapTap] Failed to install Snap Tap hook!")
+            print("[debug:SnapTap] Failed to install hook!")
             return
 
         msg = ctypes.wintypes.MSG()

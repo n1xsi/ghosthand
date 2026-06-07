@@ -2,21 +2,16 @@ from src.core.input_sim import (
     is_key_pressed, MouseClick, ClickKey,
     DIK_Q, VK_MIDBUTTON, MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP,
 )
-import threading
+from src.core.base import ScriptBase
 import time
 
 
-class FastZoomCore:
+class FastZoomCore(ScriptBase):
     def __init__(self):
-        self.running = False
-        self.enabled = False
+        super().__init__()
 
         self.qq_switch = True
         self.macro_delay = 0.015  # Задержка между действиями макроса
-
-    def start(self):
-        self.running = True
-        threading.Thread(target=self._loop, daemon=True).start()
 
     def _loop(self):
         while self.running:

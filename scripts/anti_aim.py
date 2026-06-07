@@ -1,20 +1,15 @@
 from src.core.input_sim import MouseMove, is_key_pressed, VK_F
-import threading
+from src.core.base import ScriptBase
 import time
 
 
-class AntiAimCore:
+class AntiAimCore(ScriptBase):
     def __init__(self):
-        self.running = False
-        self.enabled = False  # Галочка в меню
-        self.active = False   # Переключение клавишей F
+        super().__init__()
 
-        self.frequency = 0.15  # Как часто дёргается голова (секунды)
-        self.strength = 4500   # Угол/Сила рывка (в пикселях мыши)
-
-    def start(self):
-        self.running = True
-        threading.Thread(target=self._loop, daemon=True).start()
+        self.active = False    # Переключение клавишей F
+        self.frequency = 0.15  # Частота рывков головы (секунды)
+        self.strength = 4500   # Угол/Сила рывка (пикселей мыши)
 
     def _loop(self):
         key_was_pressed = False
@@ -37,20 +32,14 @@ class AntiAimCore:
                 key_was_pressed = False
 
             if self.active:
-                # Рассчитывание вектора сдвига:
-                # Y = 1/3 от X => персонаж смотрит по диагонали вниз
+                # Y = 1/3 от X → диагональный рывок вниз
                 dx, dy = int(self.strength), int(self.strength // 3)
-
                 # РЫВОК
                 MouseMove(dx, dy)
-
-                # Ожидание 15 миллисекунд
-                # Время, чтобы движок зарегистрировал сломанный угол
+                # Время для регистрации угла на сервере
                 time.sleep(0.015)
-
                 # ВОЗВРАТ (прицела на место)
                 MouseMove(-dx, -dy)
-
                 # Ожидание до следующего тика
                 time.sleep(self.frequency)
             else:
