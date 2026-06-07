@@ -17,7 +17,6 @@ from src.ui.gui import build_gui
 from src.ui.theme import create_theme
 from src.ui.overlay import overlay_instance
 
-# Все скрипты, у которых вызывается .start()
 _SCRIPTS = [
     bhop_instance,
     mrc_instance,

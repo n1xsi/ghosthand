@@ -14,4 +14,4 @@ STATUS_RIGHT_MARGIN  = 160
 
 # UI
 UI_SCALE = 1.4
-VERSION  = "v0.9.8 Dev Build"
+VERSION  = "v0.9.9 Dev Build"
