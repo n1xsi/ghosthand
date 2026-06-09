@@ -18,6 +18,7 @@ from scripts.turn180 import turn180_instance
 from src.config import (
     DEEP_PURPLE,
     SOFT_PURPLE,
+    ACTIVE_PURPLE,
     ADDITIONAL_BLACK,
     BASE_VIEWPORT_WIDTH,
     BASE_VIEWPORT_HEIGHT,
@@ -37,6 +38,7 @@ from src.ui.callbacks import (
     toggle_fastzoom, toggle_fastzoom_qq_switch,
     toggle_turn180, update_turn180_pixels,
     toggle_watermark, update_ui_scale,
+    update_theme_preset, apply_custom_theme,
 )
 
 
@@ -50,7 +52,7 @@ def _tab_aim():
         with dpg.group(tag="aimpull_settings_group", show=False):
             dpg.add_spacer(height=5)
             with dpg.child_window(height=205, border=True):
-                dpg.add_text("AimPull Settings", color=SOFT_PURPLE)
+                dpg.add_text("AimPull Settings", color=SOFT_PURPLE, tag="header_aimpull")
                 dpg.add_slider_float(
                     label="Smooth",
                     default_value=aimpull_instance.smooth,
@@ -66,8 +68,7 @@ def _tab_aim():
                 dpg.add_spacer(height=5)
                 dpg.add_separator()
                 dpg.add_spacer(height=5)
-                dpg.add_checkbox(label="Draw FOV Circle",
-                                 callback=toggle_show_fov)
+                dpg.add_checkbox(label="Draw FOV Circle", callback=toggle_show_fov)
                 dpg.add_color_edit(
                     label="FOV Color",
                     default_value=(255, 255, 255, 255),
@@ -80,7 +81,7 @@ def _tab_aim():
         with dpg.group(tag="trigger_settings_group", show=False):
             dpg.add_spacer(height=5)
             with dpg.child_window(height=140, border=True):
-                dpg.add_text("Trigger Settings", color=SOFT_PURPLE)
+                dpg.add_text("Trigger Settings", color=SOFT_PURPLE, tag="header_trigger")
                 dpg.add_slider_float(
                     label="Reaction Delay",
                     default_value=pixel_trigger_instance.reaction_delay,
@@ -103,7 +104,7 @@ def _tab_aim():
         with dpg.group(tag="autopistol_settings_group", show=False):
             dpg.add_spacer(height=5)
             with dpg.child_window(height=100, border=True):
-                dpg.add_text("AutoPistol Settings", color=SOFT_PURPLE)
+                dpg.add_text("AutoPistol Settings", color=SOFT_PURPLE, tag="header_autopistol")
                 dpg.add_slider_float(
                     label="Delay",
                     default_value=autopistol_instance.delay,
@@ -116,7 +117,7 @@ def _tab_aim():
         with dpg.group(tag="mrc_settings_group", show=False):
             dpg.add_spacer(height=5)
             with dpg.child_window(height=125, border=True):
-                dpg.add_text("MRC Settings", color=SOFT_PURPLE)
+                dpg.add_text("MRC Settings", color=SOFT_PURPLE, tag="header_mrc")
                 dpg.add_slider_int(
                     label="Strength",
                     default_value=mrc_instance.strength,
@@ -140,7 +141,7 @@ def _tab_antiaim():
         with dpg.group(tag="antiaim_settings_group", show=False):
             dpg.add_spacer(height=5)
             with dpg.child_window(height=125, border=True):
-                dpg.add_text("Flick Anti-Aim Settings", color=SOFT_PURPLE)
+                dpg.add_text("Flick Anti-Aim Settings", color=SOFT_PURPLE, tag="header_antiaim")
                 dpg.add_slider_float(
                     label="Frequency (sec)",
                     default_value=anti_aim_instance.frequency,
@@ -164,7 +165,7 @@ def _tab_movement():
         with dpg.group(tag="bhop_settings_group", show=False):
             dpg.add_spacer(height=5)
             with dpg.child_window(height=125, border=True):
-                dpg.add_text("Bhop Settings", color=SOFT_PURPLE)
+                dpg.add_text("Bhop Settings", color=SOFT_PURPLE, tag="header_bhop")
                 dpg.add_checkbox(label="Randomize Jump Offset", callback=toggle_random_offset)
                 dpg.add_slider_float(
                     label="Jump Delay (sec)",
@@ -182,13 +183,62 @@ def _tab_visuals():
         dpg.add_spacer(height=10)
         dpg.add_checkbox(label="Crosshair", enabled=False)
         dpg.add_checkbox(label="Watermark", callback=toggle_watermark)
+
+        dpg.add_spacer(height=8)
+        dpg.add_separator()
+        dpg.add_spacer(height=6)
+
+        dpg.add_text("Theme", color=SOFT_PURPLE)
+        dpg.add_radio_button(
+            tag="theme_radio",
+            items=["GhostHand", "Black & White", "Razer", "Custom"],
+            default_value="GhostHand",
+            horizontal=True,
+            callback=update_theme_preset,
+        )
+
+        # ── Custom-панель (скрыта по умолчанию) ──────────────────
+        with dpg.group(tag="custom_theme_group", show=False):
+            dpg.add_spacer(height=5)
+            with dpg.child_window(height=202, border=True):
+                dpg.add_text("Custom Theme", color=SOFT_PURPLE, tag="header_custom_theme")
+                dpg.add_color_edit(
+                    label="Accent", tag="ct_accent",
+                    default_value=list(DEEP_PURPLE), no_alpha=True,
+                )
+                dpg.add_color_edit(
+                    label="Accent Hover", tag="ct_accent_hover",
+                    default_value=list(ACTIVE_PURPLE), no_alpha=True,
+                )
+                dpg.add_color_edit(
+                    label="Tab BG", tag="ct_tab",
+                    default_value=[54, 0, 102, 255], no_alpha=True,
+                )
+                dpg.add_color_edit(
+                    label="Window BG", tag="ct_window_bg",
+                    default_value=[20, 20, 20, 255], no_alpha=True,
+                )
+                dpg.add_color_edit(
+                    label="Frame BG", tag="ct_frame_bg",
+                    default_value=[60, 60, 60, 255], no_alpha=True,
+                )
+                dpg.add_color_edit(
+                    label="Header Text", tag="ct_text_accent",
+                    default_value=list(SOFT_PURPLE), no_alpha=True,
+                )
+                dpg.add_spacer(height=4)
+                dpg.add_button(label="Apply Custom Theme", callback=apply_custom_theme, width=-1)
+
+        dpg.add_spacer(height=8)
+        dpg.add_separator()
+        dpg.add_spacer(height=6)
+
         dpg.add_combo(
             label="UI Scale",
             items=["100%", "125%", "140%", "150%", "175%", "200%"],
             default_value="140%",
             callback=update_ui_scale,
         )
-        dpg.add_combo(label="Theme", items=["Default", "Dark", "Purple"], default_value="Default")
 
 
 def _tab_misc():
@@ -201,7 +251,7 @@ def _tab_misc():
         with dpg.group(tag="fastzoom_settings_group", show=False):
             dpg.add_spacer(height=5)
             with dpg.child_window(height=115, border=True):
-                dpg.add_text("FastZoom Settings", color=SOFT_PURPLE)
+                dpg.add_text("FastZoom Settings", color=SOFT_PURPLE, tag="header_fastzoom")
                 dpg.add_checkbox(
                     label="Q-Q switch",
                     callback=toggle_fastzoom_qq_switch,
@@ -218,7 +268,7 @@ def _tab_misc():
         with dpg.group(tag="turn180_settings_group", show=False):
             dpg.add_spacer(height=5)
             with dpg.child_window(height=125, border=True):
-                dpg.add_text("Turn Settings", color=SOFT_PURPLE)
+                dpg.add_text("Turn Settings", color=SOFT_PURPLE, tag="header_turn180")
                 dpg.add_slider_int(
                     label="Distance (Pixels)",
                     default_value=turn180_instance.pixels,
@@ -263,7 +313,7 @@ def build_gui() -> None:
     ):
         # Заголовок
         with dpg.group(horizontal=True):
-            dpg.add_text("GHOSTHAND", color=DEEP_PURPLE)
+            dpg.add_text("GHOSTHAND", color=DEEP_PURPLE, tag="title_text")
             dpg.add_text(VERSION, color=ADDITIONAL_BLACK)
             dpg.add_text("SYSTEM ACTIVE", tag="status_text", color=(50, 255, 50, 255), pos=BASE_STATUS_TEXT_POS)
 

@@ -1,11 +1,12 @@
 """
 UI Callbacks для GhostHand.
 
-Вместо однотипных функций используются фабрики:
+Вместо 30 однотипных функций используются фабрики:
   - _make_toggle(instance, group_tag, label) → callback для чекбоксов вкл/выкл
   - _make_setter(instance, attr, fmt)        → callback для слайдеров/значений
 """
 from __future__ import annotations
+from src.config import THEME_PRESETS
 
 import dearpygui.dearpygui as dpg
 
@@ -122,8 +123,6 @@ update_turn180_pixels = _make_setter(turn180_instance, "pixels")
 toggle_watermark = _make_toggle(watermark_instance, label="Watermark")
 
 # ── UI Scale ──────────────────────────────────────────────────────
-
-
 def _scale(variable: int, scale: float) -> int:
     """Пересчёт размера от базового масштаба 1.4 к новому."""
     return int(variable / 1.4 * scale)
@@ -148,3 +147,50 @@ def update_ui_scale(sender, app_data):
     dpg.configure_item("status_text", pos=(new_x, BASE_STATUS_TEXT_POS[1]))
 
     print(f"[debug-UI] UI Scale → {app_data} ({new_w}x{new_h})")
+
+
+# ── Темы ──────────────────────────────────────────────────────────
+from src.ui import theme as _theme_module  # импорт после определений во избежание circular
+
+
+def update_theme_preset(sender, app_data):
+    """Колбэк радио-кнопок выбора темы."""
+    if app_data == "Custom":
+        dpg.configure_item("custom_theme_group", show=True)
+        return
+
+    dpg.configure_item("custom_theme_group", show=False)
+
+    # Синхронизрование custom-пикеров с выбранным пресетом
+    if app_data in THEME_PRESETS:
+        c = THEME_PRESETS[app_data]
+        dpg.set_value("ct_accent",       list(c["accent"]))
+        dpg.set_value("ct_accent_hover", list(c["accent_hover"]))
+        dpg.set_value("ct_tab",          list(c["tab"]))
+        dpg.set_value("ct_window_bg",    list(c["window_bg"]))
+        dpg.set_value("ct_frame_bg",     list(c["frame_bg"]))
+        dpg.set_value("ct_text_accent",  list(c["text_accent"]))
+
+    _theme_module.apply_preset(app_data)
+
+
+def apply_custom_theme(sender, app_data):
+    """Колбэк кнопки «Apply Custom Theme»."""
+    def _read(tag: str) -> tuple[int, int, int, int]:
+        val = dpg.get_value(tag)
+        # DPG возвращает значения 0-255 или 0.0-1.0 зависимо от режима
+        def _norm(x): return int(x * 255) if x <= 1.0 else int(x)
+        r, g, b = _norm(val[0]), _norm(val[1]), _norm(val[2])
+        a = _norm(val[3]) if len(val) > 3 else 255
+        return (r, g, b, a)
+
+    colors = {
+        "accent":       _read("ct_accent"),
+        "accent_hover": _read("ct_accent_hover"),
+        "tab":          _read("ct_tab"),
+        "window_bg":    _read("ct_window_bg"),
+        "frame_bg":     _read("ct_frame_bg"),
+        "text_accent":  _read("ct_text_accent"),
+    }
+    _theme_module.apply_colors(colors)
+    print("[debug-UI] Custom theme applied")

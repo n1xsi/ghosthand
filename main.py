@@ -14,7 +14,7 @@ from scripts.turn180 import turn180_instance
 
 from src.config import BASE_VIEWPORT_WIDTH, BASE_VIEWPORT_HEIGHT, UI_SCALE
 from src.ui.gui import build_gui
-from src.ui.theme import create_theme
+from src.ui import theme as theme_module
 from src.ui.overlay import overlay_instance
 
 _SCRIPTS = [
@@ -33,9 +33,7 @@ _SCRIPTS = [
 if __name__ == "__main__":
     dpg.create_context()
     build_gui()
-
-    theme = create_theme()
-    dpg.bind_theme(theme)
+    theme_module.apply_preset("GhostHand")
     dpg.set_global_font_scale(UI_SCALE)
 
     dpg.create_viewport(
@@ -50,7 +48,7 @@ if __name__ == "__main__":
         dpg.set_viewport_small_icon("assets/icon.ico")
         dpg.set_viewport_large_icon("assets/icon.ico")
     except Exception as e:
-        print(f"[debug-UI] Icon not loaded: {e}")
+        print(f"[debug-UI] Иконка не загружена: {e}")
 
     dpg.setup_dearpygui()
 
