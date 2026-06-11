@@ -38,12 +38,11 @@ from src.ui.callbacks import (
     toggle_fastzoom, toggle_fastzoom_qq_switch,
     toggle_turn180, update_turn180_pixels,
     toggle_watermark, update_ui_scale,
-    update_theme_preset, apply_custom_theme,
+    update_theme_preset, apply_custom_theme, reset_theme,
 )
 
 
 # ── Вкладки ───────────────────────────────────────────────────────
-
 def _tab_aim():
     with dpg.tab(label="Aim Assist"):
         dpg.add_spacer(height=10)
@@ -188,7 +187,7 @@ def _tab_visuals():
         dpg.add_separator()
         dpg.add_spacer(height=6)
 
-        dpg.add_text("Theme", color=SOFT_PURPLE)
+        dpg.add_text("Theme", color=SOFT_PURPLE, tag="header_theme_label")
         dpg.add_radio_button(
             tag="theme_radio",
             items=["GhostHand", "Black & White", "Razer", "Custom"],
@@ -299,7 +298,6 @@ def _tab_keybinds():
 
 
 # ── Точка входа ───────────────────────────────────────────────────
-
 def build_gui() -> None:
     """Строит весь интерфейс. Вызывать после dpg.create_context()."""
     with dpg.window(

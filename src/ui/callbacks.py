@@ -178,7 +178,6 @@ def apply_custom_theme(sender, app_data):
     """Колбэк кнопки «Apply Custom Theme»."""
     def _read(tag: str) -> tuple[int, int, int, int]:
         val = dpg.get_value(tag)
-        # DPG возвращает значения 0-255 или 0.0-1.0 зависимо от режима
         def _norm(x): return int(x * 255) if x <= 1.0 else int(x)
         r, g, b = _norm(val[0]), _norm(val[1]), _norm(val[2])
         a = _norm(val[3]) if len(val) > 3 else 255
@@ -194,3 +193,23 @@ def apply_custom_theme(sender, app_data):
     }
     _theme_module.apply_colors(colors)
     print("[debug-UI] Custom theme applied")
+
+
+def reset_theme(sender, app_data):
+    """Сброс на дефолтную тему GhostHand — кнопка «Reset» в custom-панели."""
+    _theme_module.apply_preset("GhostHand")
+
+    # Сбрасываем радио-кнопку и скрываем custom-панель
+    dpg.set_value("theme_radio", "GhostHand")
+    dpg.configure_item("custom_theme_group", show=False)
+
+    # Синхронизируем пикеры с GhostHand-пресетом
+    c = THEME_PRESETS["GhostHand"]
+    dpg.set_value("ct_accent", list(c["accent"]))
+    dpg.set_value("ct_accent_hover", list(c["accent_hover"]))
+    dpg.set_value("ct_tab", list(c["tab"]))
+    dpg.set_value("ct_window_bg", list(c["window_bg"]))
+    dpg.set_value("ct_frame_bg", list(c["frame_bg"]))
+    dpg.set_value("ct_text_accent", list(c["text_accent"]))
+
+    print("[debug-UI] Theme reset → GhostHand")
