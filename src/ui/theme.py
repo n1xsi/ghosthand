@@ -20,10 +20,15 @@ from src.config import (
 )
 
 _active_theme_id: int | None = None
+_current_colors: ThemeColors | None = None
+
+
+def get_current_colors() -> ThemeColors | None:
+    """Возвращает последний применённый набор цветов (нужен для overlay при сбросе rainbow)."""
+    return _current_colors
 
 
 # ── Внутренние ────────────────────────────────────────────────────
-
 def _lighten(color: tuple, amount: int = 20) -> tuple:
     """Чуть осветляет RGB-цвет (для FrameBgHovered / FrameBgActive)."""
     r, g, b, a = color
@@ -84,7 +89,7 @@ def _update_text_tags(colors: ThemeColors) -> None:
 
 def apply_colors(colors: ThemeColors) -> None:
     """Применяет произвольный набор цветов как глобальную тему."""
-    global _active_theme_id
+    global _active_theme_id, _current_colors
 
     new_id = _build_theme(colors)
     dpg.bind_theme(new_id)
@@ -92,6 +97,7 @@ def apply_colors(colors: ThemeColors) -> None:
     if _active_theme_id is not None and dpg.does_item_exist(_active_theme_id):
         dpg.delete_item(_active_theme_id)
     _active_theme_id = new_id
+    _current_colors = colors
 
     _update_text_tags(colors)
 
