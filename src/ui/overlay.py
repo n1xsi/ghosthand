@@ -1,132 +1,194 @@
-"""
-Оверлей GhostHand.
+from scripts.watermark import watermark_instance
+from scripts.aimpull import aimpull_instance
+from src.core import input_sim
+from src.config import VERSION
 
-Управляет двумя визуальными элементами:
-  - Watermark    : плавающее окошко с тегом wm_title (тематизируемый заголовок)
-  - FOV Circle   : круг на drawlist'е внутри основного окна
-
-Rainbow-режим: плавный HSV-цикл на заголовке ватермарки (~30 fps).
-При выключении rainbow восстанавливается цвет accent из текущей темы.
-"""
 import colorsys
+import tkinter as tk
 import threading
+import ctypes
 import time
 
-import dearpygui.dearpygui as dpg
-
-from scripts.aimpull import aimpull_instance
-from scripts.watermark import watermark_instance
-from src.config import VERSION, DEEP_PURPLE
-
-# ── Теги ──────────────────────────────────────────────────────────
-_WM_WINDOW = "##wm_window"
-_WM_TITLE = "wm_title"  # заголовок ватермарки (тематизируется)
-_WM_VERSION = "wm_version"
-_FOV_DRAW = "##fov_drawlist"
+WS_EX_TRANSPARENT = 0x00000020
+GWL_EXSTYLE = -20
 
 
-class OverlayCore:
+class MasterOverlay:
     def __init__(self):
+        # Состояние оверлея
         self.running = False
+        self.root = None
+        self.canvas = None
+
+        # Объекты графики
+        self.circle_id = None
+        self.wm_bg = None
+        self.wm_header = None
+        self.wm_text_prefix = None
+        self.wm_text_status = None
+        self.wm_text_suffix = None
+
+        # Реальное разрешение экрана
+        self.screen_width = 0
+        self.screen_height = 0
+
+        # Rainbow
         self._hue = 0.0
-        self._rainbow_was_on = False  # Флаг для сброса цвета при отключении
 
-    def start(self) -> None:
+    # ── Запуск ────────────────────────────────────────────────────
+    def start(self):
         self.running = True
-        threading.Thread(target=self._init_then_loop, daemon=True).start()
+        threading.Thread(target=self._run_tk, daemon=True).start()
 
-    # ── Инициализация ─────────────────────────────────────────────
-    def _init_then_loop(self) -> None:
-        time.sleep(0.4)  # Время для DPG, чтобы поднять viewport
-        self._build_watermark()
-        self._loop()
+    def _run_tk(self):
+        try:
+            # DPI-fix: 1 пиксель tkinter = 1 физический пиксель монитора
+            ctypes.windll.user32.SetProcessDPIAware()
 
-    def _build_watermark(self) -> None:
-        """Создаёт плавающее окошко ватермарки."""
-        with dpg.window(
-            tag=_WM_WINDOW,
-            no_title_bar=True,
-            no_move=False,
-            no_resize=True,
-            no_close=True,
-            no_background=False,
-            no_scrollbar=True,
-            no_scroll_with_mouse=True,
-            pos=(10, 10),
-            width=145,
-            height=38,
-            show=False,
-        ):
-            dpg.add_text("GHOSTHAND", tag=_WM_TITLE, color=DEEP_PURPLE)
-            dpg.add_text(VERSION, tag=_WM_VERSION, color=(120, 120, 120, 200))
+            self.root = tk.Tk()
+            self.root.overrideredirect(True)
+            self.root.wm_attributes("-topmost", True)
+            self.root.wm_attributes("-transparentcolor", "black")
+            self.root.config(bg="black")
 
-    # ── Основной цикл ─────────────────────────────────────────────
-    def _loop(self) -> None:
-        while self.running:
-            try:
-                self._update_watermark()
-                self._update_fov()
-            except Exception:
-                pass
-            time.sleep(0.033)  # ~30 fps
+            # Реальное разрешение через WinAPI (игнорируем масштаб Windows)
+            self.screen_width = ctypes.windll.user32.GetSystemMetrics(0)
+            self.screen_height = ctypes.windll.user32.GetSystemMetrics(1)
+            self.root.geometry(f"{self.screen_width}x{self.screen_height}+0+0")
 
-    def _update_watermark(self) -> None:
-        enabled = watermark_instance.enabled
-        dpg.configure_item(_WM_WINDOW, show=enabled)
+            # Click-Through: клики проходят сквозь оверлей к игре
+            self.root.update_idletasks()
+            hwnd = ctypes.windll.user32.GetParent(self.root.winfo_id())
+            style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
+            ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, style | WS_EX_TRANSPARENT)
 
-        if not enabled:
-            return
+            self.canvas = tk.Canvas(
+                self.root,
+                width=self.screen_width,
+                height=self.screen_height,
+                bg='black',
+                bd=0,
+                highlightthickness=0,
+                relief='ridge',
+            )
+            self.canvas.pack(fill='both', expand=True)
 
+            # ── Создание объектов графики ──────────────────────────
+            self.circle_id = self.canvas.create_oval(0, 0, 0, 0, outline="white", width=2)
+            self.wm_bg = self.canvas.create_rectangle(0, 0, 0, 0, fill="#1A1A1A", outline="#333333", width=1)
+            self.wm_header = self.canvas.create_rectangle(0, 0, 0, 0, fill="#8B00FF", outline="")
+
+            font = ("Consolas", 10, "bold")
+            self.wm_text_prefix = self.canvas.create_text(0, 0, text="", fill="white", font=font, anchor="nw")
+            self.wm_text_status = self.canvas.create_text(0, 0, text="", fill="white", font=font, anchor="nw")
+            self.wm_text_suffix = self.canvas.create_text(0, 0, text="", fill="white", font=font, anchor="nw")
+
+            print(f"[debug:overlay] Initialized. Resolution: {self.screen_width}x{self.screen_height}")
+            self.update_loop()
+            self.root.mainloop()
+
+        except Exception as e:
+            print(f"[debug:overlay] Failed to start: {e}")
+
+    # ── Цвет шапки ────────────────────────────────────────────────
+
+    def _header_color(self) -> str:
+        """Rainbow → HSV-цикл. Иначе → accent текущей темы."""
         if watermark_instance.rainbow:
-            # Плавный HSV-цикл по оттенку
             self._hue = (self._hue + 0.003) % 1.0
             r, g, b = colorsys.hsv_to_rgb(self._hue, 1.0, 1.0)
-            dpg.configure_item(_WM_TITLE, color=(int(r * 255), int(g * 255), int(b * 255), 255))
-            self._rainbow_was_on = True
+            return f"#{int(r * 255):02X}{int(g * 255):02X}{int(b * 255):02X}"
 
-        elif self._rainbow_was_on:
-            # Rainbow только что выключили - восстанавливаем цвет из текущей темы
+        try:
             from src.ui import theme as _theme
             colors = _theme.get_current_colors()
-            accent = colors["accent"] if colors else DEEP_PURPLE
-            dpg.configure_item(_WM_TITLE, color=accent)
-            self._rainbow_was_on = False
-
-    def _update_fov(self) -> None:
-        """Рисует индикатор FOV на drawlist'е внутри основного окна."""
-        if not dpg.does_item_exist(_FOV_DRAW):
-            return
-
-        dpg.delete_item(_FOV_DRAW, children_only=True)
-
-        if not aimpull_instance.show_fov:
-            return
-
-        # Центр экрана в координатах drawlist'а
-        try:
-            w = dpg.get_viewport_width()
-            h = dpg.get_viewport_height()
+            if colors:
+                r, g, b = colors["accent"][:3]
+                return f"#{r:02X}{g:02X}{b:02X}"
         except Exception:
-            return
+            pass
+        return "#8B00FF"  # fallback - GhostHand purple
 
-        cx, cy = w // 2, h // 2
-        r = aimpull_instance.fov
+    # ── Основной цикл обновления (16 мс ≈ 60 fps) ────────────────
+    def update_loop(self):
+        if not self.running:
+            self.root.destroy()
+            return
 
         try:
-            color_hex = aimpull_instance.fov_color.lstrip("#")
-            cr = int(color_hex[0:2], 16)
-            cg = int(color_hex[2:4], 16)
-            cb = int(color_hex[4:6], 16)
-        except Exception:
-            cr, cg, cb = 255, 255, 255
+            # ── FOV Circle ────────────────────────────────────────
+            if aimpull_instance.show_fov and aimpull_instance.enabled:
+                fov = aimpull_instance.fov
+                cx = self.screen_width // 2
+                cy = self.screen_height // 2
+                self.canvas.coords(self.circle_id, cx - fov,
+                                   cy - fov, cx + fov, cy + fov)
+                self.canvas.itemconfig(self.circle_id, outline=aimpull_instance.fov_color, state='normal')
+            else:
+                self.canvas.itemconfig(self.circle_id, state='hidden')
 
-        dpg.draw_circle(
-            center=(cx, cy),
-            radius=r,
-            color=(cr, cg, cb, 180),
-            thickness=1.5,
-            parent=_FOV_DRAW,
-        )
+            # ── Watermark ─────────────────────────────────────────
+            if watermark_instance.enabled:
+                prefix_str = f"GHOSTHAND | {VERSION} | "
 
+                if input_sim.GLOBAL_PAUSE:
+                    status_str = "GLOBAL PAUSE"
+                    status_color = "#FF6B6B"
+                else:
+                    status_str = "SYSTEM ACTIVE"
+                    status_color = "#55FF88"
 
-overlay_instance = OverlayCore()
+                suffix_str = f" | {time.strftime('%H:%M:%S')}"
+
+                self.canvas.itemconfig(self.wm_text_prefix, text=prefix_str,  state='normal')
+                self.canvas.itemconfig(self.wm_text_status, text=status_str,  fill=status_color, state='normal')
+                self.canvas.itemconfig(self.wm_text_suffix, text=suffix_str,  state='normal')
+
+                # Высчитываем ширину каждого блока для конкатенации в одну строку
+                bbox_p = self.canvas.bbox(self.wm_text_prefix)
+                bbox_s = self.canvas.bbox(self.wm_text_status)
+                bbox_su = self.canvas.bbox(self.wm_text_suffix)
+
+                w_p = bbox_p[2] - bbox_p[0]
+                w_s = bbox_s[2] - bbox_s[0]
+                w_su = bbox_su[2] - bbox_su[0]
+
+                text_h = bbox_p[3] - bbox_p[1]
+                total_text_w = w_p + w_s + w_su
+
+                pad_x, pad_y = 10, 6
+                rect_w = total_text_w + (pad_x * 2)
+                rect_h = text_h + (pad_y * 2)
+
+                x1 = self.screen_width - rect_w - 20
+                y1 = 20
+                x2 = x1 + rect_w
+                y2 = y1 + rect_h
+
+                # Фон + шапка (цвет зависит от темы / rainbow)
+                self.canvas.coords(self.wm_bg, x1, y1, x2, y2)
+                self.canvas.itemconfig(self.wm_bg, state='normal')
+
+                self.canvas.coords(self.wm_header, x1, y1, x2, y1 + 2)
+                self.canvas.itemconfig(self.wm_header, fill=self._header_color(), state='normal')
+
+                # Расстановка текстов в одну линию
+                start_x = x1 + pad_x
+                self.canvas.coords(self.wm_text_prefix, start_x, y1 + pad_y)
+                self.canvas.coords(self.wm_text_status, start_x + w_p, y1 + pad_y)
+                self.canvas.coords(self.wm_text_suffix, start_x + w_p + w_s, y1 + pad_y)
+
+            else:
+                self.canvas.itemconfig(self.wm_bg, state='hidden')
+                self.canvas.itemconfig(self.wm_header, state='hidden')
+                self.canvas.itemconfig(self.wm_text_prefix, state='hidden')
+                self.canvas.itemconfig(self.wm_text_status, state='hidden')
+                self.canvas.itemconfig(self.wm_text_suffix, state='hidden')
+
+        except Exception as e:
+            print(f"[debug:overlay] Update loop crashed: {e}")
+
+        self.root.after(16, self.update_loop)
+
+# Экземпляр класса MasterOverlay для импорта в меню
+overlay_instance = MasterOverlay()
