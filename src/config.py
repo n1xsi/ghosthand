@@ -40,7 +40,7 @@ THEME_PRESETS: dict[str, ThemeColors] = {
 # Все GUI-теги, чей цвет обновляется при смене темы
 # title_text  → цвет accent
 # остальные   → цвет text_accent
-THEMED_TITLE_TAGS  = ["title_text"]
+THEMED_TITLE_TAGS = ["title_text", "wm_title"]
 THEMED_HEADER_TAGS = [
     "header_aimpull",
     "header_trigger",

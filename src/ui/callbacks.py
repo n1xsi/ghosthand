@@ -35,7 +35,6 @@ _current_ui_scale: float = UI_SCALE
 
 
 # ── Фабрики ───────────────────────────────────────────────────────
-
 def _make_toggle(instance, group_tag: str | None = None, label: str = ""):
     """Фабрика callback'а для чекбокса включения/выключения скрипта."""
     name = label or type(instance).__name__
@@ -121,6 +120,11 @@ update_turn180_pixels = _make_setter(turn180_instance, "pixels")
 
 # ── Watermark ─────────────────────────────────────────────────────
 toggle_watermark = _make_toggle(watermark_instance, label="Watermark")
+
+
+def toggle_rainbow_watermark(sender, app_data):
+    watermark_instance.rainbow = app_data
+    print(f"[debug-UI] Rainbow Watermark {'ON' if app_data else 'OFF'}")
 
 # ── UI Scale ──────────────────────────────────────────────────────
 def _scale(variable: int, scale: float) -> int:

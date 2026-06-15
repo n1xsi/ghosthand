@@ -39,6 +39,7 @@ from src.ui.callbacks import (
     toggle_turn180, update_turn180_pixels,
     toggle_watermark, update_ui_scale,
     update_theme_preset, apply_custom_theme, reset_theme,
+    toggle_rainbow_watermark,
 )
 
 
@@ -195,6 +196,7 @@ def _tab_visuals():
             horizontal=True,
             callback=update_theme_preset,
         )
+        dpg.add_checkbox(label="Rainbow Watermark", callback=toggle_rainbow_watermark, indent=4)
 
         # ── Custom-панель (скрыта по умолчанию) ──────────────────
         with dpg.group(tag="custom_theme_group", show=False):
@@ -226,7 +228,9 @@ def _tab_visuals():
                     default_value=list(SOFT_PURPLE), no_alpha=True,
                 )
                 dpg.add_spacer(height=4)
-                dpg.add_button(label="Apply Custom Theme", callback=apply_custom_theme, width=-1)
+                with dpg.group(horizontal=True):
+                    dpg.add_button(label="Reset", callback=reset_theme, width=80)
+                    dpg.add_button(label="Apply Custom Theme", callback=apply_custom_theme, width=-1)
 
         dpg.add_spacer(height=8)
         dpg.add_separator()
