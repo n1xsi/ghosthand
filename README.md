@@ -78,6 +78,9 @@
   **:feelsgood: Только в Secured-режиме** _(высокий риск детекта античитом за какие-то функции)_:
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/730/8dbc71957312bbd3baea65848b545be9eae2a355.jpg" align="top"> CS 2 **(bad for VACNET)**
   * Некоторые прочие игры с Vanguard / EAC / BattlEye.
+
+  **:speak_no_evil: Скорее бесполезно, чем полезно** _(полезна лишь малая часть функций)_:
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/1422450/f6da1420a173324d49bcd470fa3eee781ad0fa5e.jpg" align="top"> Deadlock
 </details>
 
 ## 🚀 Установка и запуск
