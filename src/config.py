@@ -40,7 +40,7 @@ THEME_PRESETS: dict[str, ThemeColors] = {
 # Все GUI-теги, чей цвет обновляется при смене темы
 # title_text  → цвет accent
 # остальные   → цвет text_accent
-THEMED_TITLE_TAGS = ["title_text", "wm_title"]
+THEMED_TITLE_TAGS = ["title_text"]
 THEMED_HEADER_TAGS = [
     "header_aimpull",
     "header_trigger",
@@ -52,7 +52,12 @@ THEMED_HEADER_TAGS = [
     "header_turn180",
     "header_custom_theme",
     "header_theme_label",
+    "header_watermark",
 ]
+
+# Hex-версия акцентного цвета (tkinter fallback до применения темы)
+DEEP_PURPLE_HEX = "#8B00FF"
+WM_DEFAULT_POSITION = "Top Right"
 
 # ── Алиасы на дефолтную тему (GhostHand) для инициализации GUI ────
 DEEP_PURPLE = THEME_PRESETS["GhostHand"]["accent"]
@@ -60,11 +65,29 @@ ACTIVE_PURPLE = THEME_PRESETS["GhostHand"]["accent_hover"]
 SOFT_PURPLE = THEME_PRESETS["GhostHand"]["text_accent"]
 ADDITIONAL_BLACK = (150, 150, 150, 200)
 
+# ── Watermark overlay ─────────────────────────────────────────────
+WM_BG_FILL = "#1A1A1A"        # Фон ватермарки
+WM_BG_OUTLINE = "#333333"     # Рамка фона
+WM_TEXT_COLOR = "white"         # Цвет основного текста
+WM_STATUS_PAUSE = "#FF6B6B"   # Цвет статуса при глобальной паузе
+WM_STATUS_ACTIVE = "#55FF88"  # Цвет статуса при активном состоянии
+WM_MARGIN = 20                  # Отступ от края экрана (пикс.)
+WM_PAD_X = 10                   # Горизонтальный внутренний отступ
+WM_PAD_Y = 6                    # Вертикальный внутренний отступ
+WM_HEADER_H = 2                 # Высота цветной полосочки шапки (пикс.)
+WM_FONT_NAME = "Consolas"       # Шрифт
+WM_FONT_BASE = 10               # Базовый размер при UI_SCALE = 1.4
+WM_FONT_MIN = 8                 # Минимальный размер шрифта
+WM_POSITIONS = [                # Варианты позиции ватермарки
+    "Top Left", "Top Center", "Top Right",
+    "Bottom Left", "Bottom Center", "Bottom Right",
+]
+
 # ── Размеры окна ──────────────────────────────────────────────────
 BASE_VIEWPORT_WIDTH = 600
 BASE_VIEWPORT_HEIGHT = 420
 BASE_STATUS_TEXT_POS = (440, 8)
 STATUS_RIGHT_MARGIN = 160
-
 UI_SCALE = 1.4
+
 VERSION = "v0.9.9 Dev Build"
