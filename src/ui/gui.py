@@ -17,13 +17,15 @@ from scripts.turn180 import turn180_instance
 
 from src.config import (
     DEEP_PURPLE,
-    SOFT_PURPLE,
     ACTIVE_PURPLE,
+    SOFT_PURPLE,
     ADDITIONAL_BLACK,
     BASE_VIEWPORT_WIDTH,
     BASE_VIEWPORT_HEIGHT,
     BASE_STATUS_TEXT_POS,
     VERSION,
+    WM_POSITIONS,
+    WM_DEFAULT_POSITION,
 )
 from src.ui.callbacks import (
     toggle_aimpull, update_smooth, update_fov,
@@ -39,7 +41,7 @@ from src.ui.callbacks import (
     toggle_turn180, update_turn180_pixels,
     toggle_watermark, update_ui_scale,
     update_theme_preset, apply_custom_theme, reset_theme,
-    toggle_rainbow_watermark,
+    toggle_rainbow_watermark, update_watermark_position,
 )
 
 
@@ -183,6 +185,17 @@ def _tab_visuals():
         dpg.add_spacer(height=10)
         dpg.add_checkbox(label="Crosshair", enabled=False)
         dpg.add_checkbox(label="Watermark", callback=toggle_watermark)
+        with dpg.group(tag="watermark_settings_group", show=False):
+            dpg.add_spacer(height=5)
+            with dpg.child_window(height=100, border=True):
+                dpg.add_text("Watermark Settings", color=SOFT_PURPLE, tag="header_watermark")
+                dpg.add_checkbox(label="Rainbow Mode", callback=toggle_rainbow_watermark)
+                dpg.add_combo(
+                    label="Position",
+                    items=WM_POSITIONS,
+                    default_value=WM_DEFAULT_POSITION,
+                    callback=update_watermark_position,
+                )
 
         dpg.add_spacer(height=8)
         dpg.add_separator()
@@ -196,7 +209,6 @@ def _tab_visuals():
             horizontal=True,
             callback=update_theme_preset,
         )
-        dpg.add_checkbox(label="Rainbow Watermark", callback=toggle_rainbow_watermark, indent=4)
 
         # ── Custom-панель (скрыта по умолчанию) ──────────────────
         with dpg.group(tag="custom_theme_group", show=False):

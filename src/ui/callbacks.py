@@ -119,12 +119,18 @@ toggle_turn180 = _make_toggle(turn180_instance, "turn180_settings_group", "Turn1
 update_turn180_pixels = _make_setter(turn180_instance, "pixels")
 
 # ── Watermark ─────────────────────────────────────────────────────
-toggle_watermark = _make_toggle(watermark_instance, label="Watermark")
+toggle_watermark = _make_toggle(watermark_instance, "watermark_settings_group", "Watermark")
 
 
 def toggle_rainbow_watermark(sender, app_data):
     watermark_instance.rainbow = app_data
     print(f"[debug-UI] Rainbow Watermark {'ON' if app_data else 'OFF'}")
+
+
+def update_watermark_position(sender, app_data):
+    watermark_instance.position = app_data
+    print(f"[debug-UI] Watermark position → {app_data}")
+
 
 # ── UI Scale ──────────────────────────────────────────────────────
 def _scale(variable: int, scale: float) -> int:
@@ -140,6 +146,7 @@ def update_ui_scale(sender, app_data):
         return
 
     _current_ui_scale = scale
+    watermark_instance.scale = scale
     dpg.set_global_font_scale(scale)
 
     new_w = _scale(BASE_VIEWPORT_WIDTH, scale)
