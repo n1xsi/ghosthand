@@ -72,6 +72,7 @@
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/70/95be6d131fc61f145797317ca437c9765f24b41c.jpg" align="top"> Half-Life 1
   * <img src="https://cdn2.steamgriddb.com/icon/3fd33fca2c8309458ce87fc2777e51f6/32/32x32.png" align="top"> Postal 2 Multiplayer
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/40/c525f76c8bc7353db4fd74b128c4ae2028426c2a.jpg" align="top"> Deathmatch Classic
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/360/40b8a62efff5a9ab356e5c56f5c8b0532c8e1aa3.jpg" align="top"> Half-Life Deathmatch: Source
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/20/38ea7ebe3c1abbbbf4eabdbef174c41a972102b9.jpg" align="top"> TF Classic
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/41070/2e7a17d4b345ffb13ef3d9e39257c2659fe4a86b.jpg" align="top"> Serious Sam 3: BFE
 
