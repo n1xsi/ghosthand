@@ -62,18 +62,19 @@
   <br>
 
   **:accessibility: Полная совместимость** _(корректно работает бо́льшая часть функций)_:
-  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/3065800/ac94c44cc0d83393f57578e5a122eac481e68933.jpg" align="top"> Marathon *(ez BattleEye)*
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/3065800/ac94c44cc0d83393f57578e5a122eac481e68933.jpg" align="top"> Marathon *(ez battleeye)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/10/6b0312cda02f5f777efa2f3318c307ff9acafbb5.jpg" align="top"> CS 1.6 *(ez old vac)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/240/9052fa60c496a1c03383b27687ec50f4bf0f0e10.jpg" align="top"> CS:S *(ez vac)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/4465480/c42651245856bf11a1201a4b521040ae830f2b07.jpg" align="top"> CS:GO *(ez vac)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/1280770/a40efa7f154decf48622a25f8b4fe9b67929d7e3.jpg" align="top"> Redmatch 2 *(ez enforcer)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/706990/84e0869208df5df1d65605ebb5bb0b95d6f2d596.jpg" align="top"> BLOCKPOST LEGACY *(ez in-game AC)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/500/428df26bc35b09319e31b1ffb712487b20b3245c.jpg" align="top"> Left 4 Dead **+** Left 4 Dead 2 *(ez vac)*
-  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/70/95be6d131fc61f145797317ca437c9765f24b41c.jpg" align="top"> Half-Life 1
   * <img src="https://cdn2.steamgriddb.com/icon/3fd33fca2c8309458ce87fc2777e51f6/32/32x32.png" align="top"> Postal 2 Multiplayer
-  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/40/c525f76c8bc7353db4fd74b128c4ae2028426c2a.jpg" align="top"> Deathmatch Classic
-  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/360/40b8a62efff5a9ab356e5c56f5c8b0532c8e1aa3.jpg" align="top"> Half-Life Deathmatch: Source
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/20/38ea7ebe3c1abbbbf4eabdbef174c41a972102b9.jpg" align="top"> TF Classic
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/40/c525f76c8bc7353db4fd74b128c4ae2028426c2a.jpg" align="top"> Deathmatch Classic
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/70/95be6d131fc61f145797317ca437c9765f24b41c.jpg" align="top"> Half-Life 1
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/360/40b8a62efff5a9ab356e5c56f5c8b0532c8e1aa3.jpg" align="top"> Half-Life Deathmatch: Source
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/320/795e85364189511f4990861b578084deef086cb1.jpg" align="top"> Half-Life 2: Deathmatch *(ez vac)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/41070/2e7a17d4b345ffb13ef3d9e39257c2659fe4a86b.jpg" align="top"> Serious Sam 3: BFE
 
   **:feelsgood: Только в Secured-режиме** _(высокий риск детекта античитом за какие-то функции)_:
