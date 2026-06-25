@@ -46,7 +46,7 @@
 * Snap Tap – Приоритет последнего нажатия клавиш `A`/`D` (быстрая смена направления движения).
 
 ### 🎨 Visuals (Внешний вид)
-* Watermark – Стильная плашка в углу экрана со статусом софта и временем.
+* Watermark – Стильная плашка на экране со статусом софта и временем.
 * UI Scale – Изменение размеров окна и интерфейса (для всех мониторов и разрешений экранов).  
 
 ### ⭐ Misc (Разное)
@@ -70,12 +70,13 @@
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/706990/84e0869208df5df1d65605ebb5bb0b95d6f2d596.jpg" align="top"> BLOCKPOST LEGACY *(ez in-game AC)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/500/428df26bc35b09319e31b1ffb712487b20b3245c.jpg" align="top"> Left 4 Dead **+** Left 4 Dead 2 *(ez vac)*
   * <img src="https://cdn2.steamgriddb.com/icon/3fd33fca2c8309458ce87fc2777e51f6/32/32x32.png" align="top"> Postal 2 Multiplayer
-  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/20/38ea7ebe3c1abbbbf4eabdbef174c41a972102b9.jpg" align="top"> TF Classic
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/20/38ea7ebe3c1abbbbf4eabdbef174c41a972102b9.jpg" align="top"> TF Classic *(ez server AC)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/40/c525f76c8bc7353db4fd74b128c4ae2028426c2a.jpg" align="top"> Deathmatch Classic
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/70/95be6d131fc61f145797317ca437c9765f24b41c.jpg" align="top"> Half-Life 1
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/360/40b8a62efff5a9ab356e5c56f5c8b0532c8e1aa3.jpg" align="top"> Half-Life Deathmatch: Source
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/320/795e85364189511f4990861b578084deef086cb1.jpg" align="top"> Half-Life 2: Deathmatch *(ez vac)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/41070/2e7a17d4b345ffb13ef3d9e39257c2659fe4a86b.jpg" align="top"> Serious Sam 3: BFE
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/218620/a6abc0d0c1e79c0b5b0f5c8ab81ce9076a542414.jpg" align="top"> PAYDAY 2
 
   **:feelsgood: Только в Secured-режиме** _(высокий риск детекта античитом за какие-то функции)_:
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/730/8dbc71957312bbd3baea65848b545be9eae2a355.jpg" align="top"> CS 2 **(bad for VACNET)**
