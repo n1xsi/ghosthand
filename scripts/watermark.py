@@ -8,5 +8,11 @@ class WatermarkCore:
         self.position = WM_DEFAULT_POSITION
         self.scale = UI_SCALE
 
+        # Системный монитор — что показывать
+        self.show_cpu = False
+        self.show_gpu = False
+        self.show_ping = False
 
+
+# Экземпляр класса WatermarkCore для импорта в меню
 watermark_instance = WatermarkCore()

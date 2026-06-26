@@ -35,4 +35,5 @@ class Turn180Core(ScriptBase):
             time.sleep(0.01)
 
 
+# Экземпляр класса Turn180Core для импорта в меню
 turn180_instance = Turn180Core()
