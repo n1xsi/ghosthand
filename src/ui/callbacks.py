@@ -6,7 +6,6 @@ UI Callbacks для GhostHand.
   - _make_setter(instance, attr, fmt)        → callback для слайдеров/значений
 """
 from __future__ import annotations
-from src.config import THEME_PRESETS
 
 import dearpygui.dearpygui as dpg
 
@@ -23,6 +22,7 @@ from scripts.turn180 import turn180_instance
 from scripts.watermark import watermark_instance
 
 from src.config import (
+    THEME_PRESETS,
     BASE_VIEWPORT_WIDTH,
     BASE_VIEWPORT_HEIGHT,
     BASE_STATUS_TEXT_POS,
@@ -132,6 +132,35 @@ def update_watermark_position(sender, app_data):
     print(f"[debug-UI] Watermark position → {app_data}")
 
 
+def toggle_wm_cpu(sender, app_data):
+    watermark_instance.show_cpu = app_data
+    _update_monitor_label()
+ 
+ 
+def toggle_wm_gpu(sender, app_data):
+    watermark_instance.show_gpu = app_data
+    _update_monitor_label()
+ 
+ 
+def toggle_wm_ping(sender, app_data):
+    watermark_instance.show_ping = app_data
+    _update_monitor_label()
+
+
+def _update_monitor_label():
+    """Обновляет заголовок collapsing_header по текущему выбору метрик."""
+    parts = []
+    if watermark_instance.show_cpu:  parts.append("CPU")
+    if watermark_instance.show_gpu:  parts.append("GPU")
+    if watermark_instance.show_ping: parts.append("Ping")
+    label = "Monitor: " + (", ".join(parts) if parts else "None")
+    try:
+        if dpg.does_item_exist("wm_monitor_header"):
+            dpg.configure_item("wm_monitor_header", label=label)
+    except Exception:
+        pass
+
+
 # ── UI Scale ──────────────────────────────────────────────────────
 def _scale(variable: int, scale: float) -> int:
     """Пересчёт размера от базового масштаба 1.4 к новому."""
@@ -146,7 +175,7 @@ def update_ui_scale(sender, app_data):
         return
 
     _current_ui_scale = scale
-    watermark_instance.scale = scale
+    watermark_instance.scale = scale  # Overlay подхватит на следующем тике
     dpg.set_global_font_scale(scale)
 
     new_w = _scale(BASE_VIEWPORT_WIDTH, scale)
@@ -161,7 +190,7 @@ def update_ui_scale(sender, app_data):
 
 
 # ── Темы ──────────────────────────────────────────────────────────
-from src.ui import theme as _theme_module  # импорт после определений во избежание circular
+from src.ui import theme as _theme_module  # Импорт после определений во избежание circular
 
 
 def update_theme_preset(sender, app_data):
