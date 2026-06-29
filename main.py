@@ -16,6 +16,7 @@ from src.config import BASE_VIEWPORT_WIDTH, BASE_VIEWPORT_HEIGHT, UI_SCALE
 from src.ui.gui import build_gui
 from src.ui import theme as theme_module
 from src.ui.overlay import overlay_instance
+from src.core.sysmon import sysmon
 
 _SCRIPTS = [
     bhop_instance,
@@ -57,6 +58,7 @@ if __name__ == "__main__":
 
     panic_instance.start()
     overlay_instance.start()
+    sysmon.start()
 
     dpg.show_viewport()
     dpg.set_primary_window("Primary Window", True)

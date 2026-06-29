@@ -83,6 +83,12 @@ WM_POSITIONS = [                # Варианты позиции ватерма
     "Bottom Left", "Bottom Center", "Bottom Right",
 ]
 
+# ── Системный монитор (пороги красной подсветки) ──────────────────
+CPU_WARN_THRESHOLD = 80    # %
+GPU_WARN_THRESHOLD = 80    # %
+PING_WARN_THRESHOLD = 100  # мс
+WM_WARN_COLOR = WM_STATUS_PAUSE  # Тот же красный, что и GLOBAL PAUSE
+
 # ── Размеры окна ──────────────────────────────────────────────────
 BASE_VIEWPORT_WIDTH = 600
 BASE_VIEWPORT_HEIGHT = 420
