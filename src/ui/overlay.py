@@ -9,7 +9,7 @@ from src.config import (
     WM_STATUS_ACTIVE, WM_STATUS_PAUSE, WM_WARN_COLOR,
     WM_MARGIN, WM_PAD_X, WM_PAD_Y, WM_HEADER_H,
     WM_FONT_NAME, WM_FONT_BASE, WM_FONT_MIN,
-    CPU_WARN_THRESHOLD, GPU_WARN_THRESHOLD, PING_WARN_THRESHOLD,
+    CPU_WARN_THRESHOLD, GPU_WARN_THRESHOLD, RAM_WARN_THRESHOLD, PING_WARN_THRESHOLD,
     UI_SCALE,
 )
 
@@ -40,6 +40,7 @@ class MasterOverlay:
         self.wm_text_suffix = None
         self.wm_text_cpu = None
         self.wm_text_gpu = None
+        self.wm_text_ram = None
         self.wm_text_ping = None
 
         # Реальное разрешение экрана
@@ -102,6 +103,7 @@ class MasterOverlay:
             self.wm_text_suffix = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
             self.wm_text_cpu = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
             self.wm_text_gpu = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
+            self.wm_text_ram = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
             self.wm_text_ping = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
 
             print(f"[debug:overlay] Initialized. Resolution: {self.screen_width}x{self.screen_height}")
@@ -149,7 +151,6 @@ class MasterOverlay:
         }.get(pos, (sw - rect_w - m, m))
 
     # ── Главный цикл (16 мс ≈ 60 fps) ────────────────────────────
-
     def update_loop(self):
         if not self.running:
             self.root.destroy()
@@ -165,7 +166,7 @@ class MasterOverlay:
                 self._tk_font.config(size=font_size)
                 self._text_h = self._tk_font.metrics("linespace")
                 for item in (self.wm_text_prefix, self.wm_text_status, self.wm_text_suffix,
-                             self.wm_text_cpu, self.wm_text_gpu, self.wm_text_ping):
+                             self.wm_text_cpu, self.wm_text_gpu, self.wm_text_ram, self.wm_text_ping):
                     self.canvas.itemconfig(item, font=font_tuple)
 
             # ── FOV Circle ────────────────────────────────────────
@@ -184,7 +185,7 @@ class MasterOverlay:
             else:
                 for item in (self.wm_bg, self.wm_header,
                              self.wm_text_prefix, self.wm_text_status, self.wm_text_suffix,
-                             self.wm_text_cpu, self.wm_text_gpu, self.wm_text_ping):
+                             self.wm_text_cpu, self.wm_text_gpu, self.wm_text_ram, self.wm_text_ping):
                     self.canvas.itemconfig(item, state="hidden")
 
         except Exception as e:
@@ -206,10 +207,12 @@ class MasterOverlay:
 
         cpu_str = f" | CPU: {sysmon.cpu_percent:.0f}%"
         gpu_str = f" | GPU: {sysmon.gpu_percent:.0f}%"
+        ram_str = f" | RAM: {sysmon.ram_percent:.0f}%"
         ping_str = f" | Ping: {sysmon.ping_ms}ms"
 
         cpu_color = WM_WARN_COLOR if sysmon.cpu_percent >= CPU_WARN_THRESHOLD else WM_TEXT_COLOR
         gpu_color = WM_WARN_COLOR if sysmon.gpu_percent >= GPU_WARN_THRESHOLD else WM_TEXT_COLOR
+        ram_color = WM_WARN_COLOR if sysmon.ram_percent >= RAM_WARN_THRESHOLD else WM_TEXT_COLOR
         ping_color = WM_WARN_COLOR if sysmon.ping_ms >= PING_WARN_THRESHOLD else WM_TEXT_COLOR
 
         # ── Ширина каждого сегмента через Font.measure() ──────────
@@ -220,6 +223,7 @@ class MasterOverlay:
             (self.wm_text_suffix, time_str,   WM_TEXT_COLOR,  True),
             (self.wm_text_cpu,    cpu_str,    cpu_color,      wm.show_cpu),
             (self.wm_text_gpu,    gpu_str,    gpu_color,      wm.show_gpu),
+            (self.wm_text_ram,    ram_str,    ram_color,      wm.show_ram),
             (self.wm_text_ping,   ping_str,   ping_color,     wm.show_ping),
         ]
 

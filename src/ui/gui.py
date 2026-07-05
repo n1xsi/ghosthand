@@ -42,7 +42,7 @@ from src.ui.callbacks import (
     toggle_watermark, update_ui_scale,
     update_theme_preset, apply_custom_theme, reset_theme,
     toggle_rainbow_watermark, update_watermark_position,
-    toggle_wm_cpu, toggle_wm_gpu, toggle_wm_ping,
+    toggle_wm_cpu, toggle_wm_gpu, toggle_wm_ram, toggle_wm_ping,
 )
 
 
@@ -188,7 +188,7 @@ def _tab_visuals():
         dpg.add_checkbox(label="Watermark", callback=toggle_watermark)
         with dpg.group(tag="watermark_settings_group", show=False):
             dpg.add_spacer(height=5)
-            with dpg.child_window(height=130, border=True):
+            with dpg.child_window(height=140, border=True):
                 dpg.add_text("Watermark Settings", color=SOFT_PURPLE, tag="header_watermark")
                 dpg.add_checkbox(label="Rainbow Mode", callback=toggle_rainbow_watermark)
                 dpg.add_combo(
@@ -200,6 +200,7 @@ def _tab_visuals():
                 with dpg.collapsing_header(label="Monitor: None", tag="wm_monitor_header"):
                     dpg.add_selectable(label="CPU Load", tag="sel_cpu",  callback=toggle_wm_cpu)
                     dpg.add_selectable(label="GPU Load", tag="sel_gpu",  callback=toggle_wm_gpu)
+                    dpg.add_selectable(label="RAM Load", tag="sel_ram",  callback=toggle_wm_ram)
                     dpg.add_selectable(label="Ping",     tag="sel_ping", callback=toggle_wm_ping)
 
         dpg.add_spacer(height=8)

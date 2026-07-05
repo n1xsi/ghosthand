@@ -86,6 +86,7 @@ WM_POSITIONS = [                # Варианты позиции ватерма
 # ── Системный монитор (пороги красной подсветки) ──────────────────
 CPU_WARN_THRESHOLD = 80    # %
 GPU_WARN_THRESHOLD = 80    # %
+RAM_WARN_THRESHOLD  = 85   # %
 PING_WARN_THRESHOLD = 100  # мс
 WM_WARN_COLOR = WM_STATUS_PAUSE  # Тот же красный, что и GLOBAL PAUSE
 

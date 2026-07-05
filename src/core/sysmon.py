@@ -16,6 +16,7 @@ class SysMonitor:
         self.cpu_percent: float = 0.0
         self.gpu_percent: float = 0.0
         self.ping_ms:     int = 0
+        self.ram_percent: float = 0.0
 
         self._running = False
 
@@ -32,6 +33,9 @@ class SysMonitor:
         while self._running:
             # CPU
             self.cpu_percent = psutil.cpu_percent(interval=None)
+
+            # RAM
+            self.ram_percent = psutil.virtual_memory().percent
 
             # GPU
             try:

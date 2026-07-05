@@ -11,6 +11,7 @@ class WatermarkCore:
         # Системный монитор — что показывать
         self.show_cpu = False
         self.show_gpu = False
+        self.show_ram  = False
         self.show_ping = False
 
 
