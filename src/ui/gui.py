@@ -43,6 +43,7 @@ from src.ui.callbacks import (
     update_theme_preset, apply_custom_theme, reset_theme,
     toggle_rainbow_watermark, update_watermark_position,
     toggle_wm_cpu, toggle_wm_gpu, toggle_wm_ram, toggle_wm_ping,
+    toggle_wm_version, toggle_wm_status, toggle_wm_time,
 )
 
 
@@ -197,11 +198,16 @@ def _tab_visuals():
                     default_value=WM_DEFAULT_POSITION,
                     callback=update_watermark_position,
                 )
-                with dpg.collapsing_header(label="Monitor: None", tag="wm_monitor_header"):
-                    dpg.add_selectable(label="CPU Load", tag="sel_cpu",  callback=toggle_wm_cpu)
-                    dpg.add_selectable(label="GPU Load", tag="sel_gpu",  callback=toggle_wm_gpu)
-                    dpg.add_selectable(label="RAM Load", tag="sel_ram",  callback=toggle_wm_ram)
-                    dpg.add_selectable(label="Ping",     tag="sel_ping", callback=toggle_wm_ping)
+                with dpg.collapsing_header(label="Display: Version, Status, Time", tag="wm_monitor_header"):
+                    dpg.add_selectable(label="Version",       tag="sel_version", callback=toggle_wm_version, default_value=True)
+                    dpg.add_selectable(label="System Status", tag="sel_status",  callback=toggle_wm_status,  default_value=True)
+                    dpg.add_selectable(label="Time",          tag="sel_time",    callback=toggle_wm_time,    default_value=True)
+                    dpg.add_separator()
+                    dpg.add_selectable(label="CPU Load",      tag="sel_cpu",     callback=toggle_wm_cpu)
+                    dpg.add_selectable(label="GPU Load",      tag="sel_gpu",     callback=toggle_wm_gpu)
+                    dpg.add_selectable(label="RAM Load",      tag="sel_ram",     callback=toggle_wm_ram)
+                    dpg.add_selectable(label="Ping",          tag="sel_ping",    callback=toggle_wm_ping)
+
 
         dpg.add_spacer(height=8)
         dpg.add_separator()

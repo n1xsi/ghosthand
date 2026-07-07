@@ -38,7 +38,7 @@ if __name__ == "__main__":
     dpg.set_global_font_scale(UI_SCALE)
 
     dpg.create_viewport(
-        title="ghosthand",
+        title="GhostHand",
         width=BASE_VIEWPORT_WIDTH,
         height=BASE_VIEWPORT_HEIGHT,
         resizable=False,

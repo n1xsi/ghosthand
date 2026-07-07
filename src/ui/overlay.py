@@ -35,9 +35,10 @@ class MasterOverlay:
         self.circle_id = None
         self.wm_bg = None
         self.wm_header = None
-        self.wm_text_prefix = None
-        self.wm_text_status = None
-        self.wm_text_suffix = None
+        self.wm_text_prefix = None   # Надпись "GHOSTHAND"
+        self.wm_text_version = None  # Версия билда
+        self.wm_text_status = None   # Надпись "GLOBAL PAUSE" или "SYSTEM ACTIVE"
+        self.wm_text_suffix = None   # Время в формате "HH:MM:SS"
         self.wm_text_cpu = None
         self.wm_text_gpu = None
         self.wm_text_ram = None
@@ -99,6 +100,7 @@ class MasterOverlay:
             self.wm_bg = self.canvas.create_rectangle(0, 0, 0, 0, fill=WM_BG_FILL, outline=WM_BG_OUTLINE, width=1)
             self.wm_header = self.canvas.create_rectangle(0, 0, 0, 0, fill=DEEP_PURPLE_HEX, outline="")
             self.wm_text_prefix = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
+            self.wm_text_version = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
             self.wm_text_status = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
             self.wm_text_suffix = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
             self.wm_text_cpu = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
@@ -165,7 +167,7 @@ class MasterOverlay:
                 font_tuple = (WM_FONT_NAME, font_size, "bold")
                 self._tk_font.config(size=font_size)
                 self._text_h = self._tk_font.metrics("linespace")
-                for item in (self.wm_text_prefix, self.wm_text_status, self.wm_text_suffix,
+                for item in (self.wm_text_prefix, self.wm_text_version, self.wm_text_status, self.wm_text_suffix,
                              self.wm_text_cpu, self.wm_text_gpu, self.wm_text_ram, self.wm_text_ping):
                     self.canvas.itemconfig(item, font=font_tuple)
 
@@ -183,8 +185,8 @@ class MasterOverlay:
             if watermark_instance.enabled:
                 self._draw_watermark()
             else:
-                for item in (self.wm_bg, self.wm_header,
-                             self.wm_text_prefix, self.wm_text_status, self.wm_text_suffix,
+                for item in (self.wm_bg, self.wm_header, self.wm_text_prefix,
+                             self.wm_text_version, self.wm_text_status, self.wm_text_suffix,
                              self.wm_text_cpu, self.wm_text_gpu, self.wm_text_ram, self.wm_text_ping):
                     self.canvas.itemconfig(item, state="hidden")
 
@@ -198,12 +200,8 @@ class MasterOverlay:
         wm = watermark_instance
 
         # ── Тексты и цвета сегментов ──────────────────────────────
-        prefix_str = f"GHOSTHAND | {VERSION} | "
-        status_str, status_color = (
-            ("GLOBAL PAUSE",  WM_STATUS_PAUSE) if input_sim.GLOBAL_PAUSE else
-            ("SYSTEM ACTIVE", WM_STATUS_ACTIVE)
-        )
-        time_str = f" | {time.strftime('%H:%M:%S')}"
+        st_txt = "GLOBAL PAUSE" if input_sim.GLOBAL_PAUSE else "SYSTEM ACTIVE"
+        st_color = WM_STATUS_PAUSE if input_sim.GLOBAL_PAUSE else WM_STATUS_ACTIVE
 
         cpu_str = f" | CPU: {sysmon.cpu_percent:.0f}%"
         gpu_str = f" | GPU: {sysmon.gpu_percent:.0f}%"
@@ -215,16 +213,15 @@ class MasterOverlay:
         ram_color = WM_WARN_COLOR if sysmon.ram_percent >= RAM_WARN_THRESHOLD else WM_TEXT_COLOR
         ping_color = WM_WARN_COLOR if sysmon.ping_ms >= PING_WARN_THRESHOLD else WM_TEXT_COLOR
 
-        # ── Ширина каждого сегмента через Font.measure() ──────────
-        # (не зависит от состояния рендера canvas — нет bbox())
         segments = [
-            (self.wm_text_prefix, prefix_str, WM_TEXT_COLOR,  True),
-            (self.wm_text_status, status_str, status_color,   True),
-            (self.wm_text_suffix, time_str,   WM_TEXT_COLOR,  True),
-            (self.wm_text_cpu,    cpu_str,    cpu_color,      wm.show_cpu),
-            (self.wm_text_gpu,    gpu_str,    gpu_color,      wm.show_gpu),
-            (self.wm_text_ram,    ram_str,    ram_color,      wm.show_ram),
-            (self.wm_text_ping,   ping_str,   ping_color,     wm.show_ping),
+            (self.wm_text_prefix, "GHOSTHAND" if wm.show_version else "GHOSTHAND | ", WM_TEXT_COLOR, True),
+            (self.wm_text_version, f" | {VERSION} | ", WM_TEXT_COLOR, wm.show_version),
+            (self.wm_text_status, f"{st_txt}", st_color, wm.show_status),
+            (self.wm_text_suffix, f" | {time.strftime('%H:%M:%S')}", WM_TEXT_COLOR, wm.show_time),
+            (self.wm_text_cpu, cpu_str, cpu_color, wm.show_cpu),
+            (self.wm_text_gpu, gpu_str, gpu_color, wm.show_gpu),
+            (self.wm_text_ram, ram_str, ram_color, wm.show_ram),
+            (self.wm_text_ping, ping_str, ping_color, wm.show_ping),
         ]
 
         # Обновляем canvas-элементы и считаем суммарную ширину

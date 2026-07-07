@@ -1,7 +1,7 @@
 """
 UI Callbacks для GhostHand.
 
-Вместо 30 однотипных функций используются фабрики:
+Вместо однотипных функций используются фабрики:
   - _make_toggle(instance, group_tag, label) → callback для чекбоксов вкл/выкл
   - _make_setter(instance, attr, fmt)        → callback для слайдеров/значений
 """
@@ -124,12 +124,26 @@ toggle_watermark = _make_toggle(watermark_instance, "watermark_settings_group", 
 
 def toggle_rainbow_watermark(sender, app_data):
     watermark_instance.rainbow = app_data
-    print(f"[debug-UI] Rainbow Watermark {'ON' if app_data else 'OFF'}")
 
 
 def update_watermark_position(sender, app_data):
     watermark_instance.position = app_data
     print(f"[debug-UI] Watermark position → {app_data}")
+
+
+def toggle_wm_version(sender, app_data):
+    watermark_instance.show_version = app_data
+    _update_monitor_label()
+
+
+def toggle_wm_status(sender, app_data):
+    watermark_instance.show_status = app_data
+    _update_monitor_label()
+
+
+def toggle_wm_time(sender, app_data):
+    watermark_instance.show_time = app_data
+    _update_monitor_label()
 
 
 def toggle_wm_cpu(sender, app_data):
@@ -153,13 +167,23 @@ def toggle_wm_ping(sender, app_data):
 
 
 def _update_monitor_label():
-    """Обновляет заголовок collapsing_header по текущему выбору метрик."""
+    wm = watermark_instance
     parts = []
-    if watermark_instance.show_cpu:  parts.append("CPU")
-    if watermark_instance.show_gpu:  parts.append("GPU")
-    if watermark_instance.show_ram:  parts.append("RAM")
-    if watermark_instance.show_ping: parts.append("Ping")
-    label = "Monitor: " + (", ".join(parts) if parts else "None")
+    if wm.show_version: parts.append("Version")
+    if wm.show_status: parts.append("Status")
+    if wm.show_time: parts.append("Time")
+    if wm.show_cpu: parts.append("CPU")
+    if wm.show_gpu: parts.append("GPU")
+    if wm.show_ram: parts.append("RAM")
+    if wm.show_ping: parts.append("Ping")
+
+    if not parts:
+        label = "Display: None"
+    elif len(parts) <= 4:
+        label = "Display: " + ", ".join(parts)
+    else:
+        label = f"Display ({len(parts)}/7)"
+
     try:
         if dpg.does_item_exist("wm_monitor_header"):
             dpg.configure_item("wm_monitor_header", label=label)
