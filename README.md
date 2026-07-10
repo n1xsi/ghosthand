@@ -87,16 +87,16 @@
 </details>
 
 ## 🚀 Установка и запуск
-Пока софт находится в **разработке** и запустить его можно только следующим образом:
+На данный момент софт находится в активной **разработке**. Запустить его можно только следующим образом:
 
 1. Склонируйте репозиторий
   ```bash
   git clone https://github.com/n1xsi/ghosthand.git
   cd ghosthand
   ```
-2. Установите необходимые библиотеки (рекомендуется использовать виртуальное окружение venv):
+2. Установите зависимости (рекомендуется использовать виртуальное окружение venv):
   ```bash
-  pip install dearpygui mss numpy keyboard psutil GPUtil
+  pip install -r requirements.txt
   ```
 3. Запустите в IDE/CMD главный файл от имени Администратора:
   ```bash
@@ -109,4 +109,6 @@
 * [ctypes (WinAPI)](https://docs.python.org/3/library/ctypes.html) – низкоуровневая эмуляция клавиатуры/мыши через SendInput
 * [threading](https://docs.python.org/3/library/threading.html) – многопоточность для считывания разных клавиш
 * [mss](https://python-mss.readthedocs.io/stable/) & [numpy](https://numpy.org/doc/stable/user/index.html#user) – cверхбыстрый захват экрана и матричные вычисления для AimPull
-* [tkinter](https://docs.python.org/3/library/tkinter.html) – gрозрачные Click-Through оверлеи поверх экрана
+* [keyboard](https://github.com/boppreh/keyboard) – глобальные хоткеи и обработка биндов
+* [psutil](https://psutil.readthedocs.io/en/latest/) & [GPUtil](https://github.com/anderskm/gputil) – мониторинг нагрузки на CPU/GPU/RAM для Watermark
+* [tkinter](https://docs.python.org/3/library/tkinter.html) – прозрачные Click-Through оверлеи поверх экрана
