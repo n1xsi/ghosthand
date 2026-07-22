@@ -4,3 +4,4 @@ mss==10.1.0
 psutil==7.2.2
 GPUtil==1.4.0
 keyboard==0.13.5
+soundcard==0.4.6
