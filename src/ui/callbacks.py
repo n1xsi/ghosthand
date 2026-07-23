@@ -18,6 +18,7 @@ from scripts.fastzoom import fastzoom_instance
 from scripts.mrc import mrc_instance
 from scripts.pixel_triggerbot import pixel_trigger_instance
 from scripts.snaptap import snap_tap_instance
+from scripts.soundesp import soundesp_instance
 from scripts.turn180 import turn180_instance
 from scripts.watermark import watermark_instance
 
@@ -189,6 +190,95 @@ def _update_monitor_label():
             dpg.configure_item("wm_monitor_header", label=label)
     except Exception:
         pass
+
+
+# ── Sound ESP ─────────────────────────────────────────────────────
+def toggle_soundesp(sender, app_data):
+    """Включение: поднимает аудио-поток и обновляет строку состояния."""
+    soundesp_instance.set_enabled(app_data)
+    soundesp_instance.apply_tuning()
+    dpg.configure_item("soundesp_settings_group", show=app_data)
+    print(f"[debug-UI] SoundESP {'ON' if app_data else 'OFF'}")
+    refresh_soundesp_status()
+
+
+update_se_radius = _make_setter(soundesp_instance, "radius")
+update_se_size = _make_setter(soundesp_instance, "size")
+update_se_decay = _make_setter(soundesp_instance, "decay", ".2f")
+
+
+def update_se_sensitivity(sender, app_data):
+    soundesp_instance.sensitivity = app_data
+    soundesp_instance.apply_tuning()
+    print(f"[debug-UI] SoundESP sensitivity = {app_data:.1f} dB")
+
+
+def toggle_se_footstep_filter(sender, app_data):
+    soundesp_instance.footstep_filter = app_data
+    soundesp_instance.apply_tuning()
+
+
+def toggle_se_reject_own(sender, app_data):
+    soundesp_instance.reject_own = app_data
+    soundesp_instance.apply_tuning()
+
+
+def update_se_color(sender, app_data):
+    r, g, b = (int(x * 255) if x <= 1.0 else int(x) for x in app_data[:3])
+    soundesp_instance.color = f"#{r:02X}{g:02X}{b:02X}"
+
+
+def update_se_device(sender, app_data):
+    """Явный выбор loopback-endpoint'а; перезапускает захват."""
+    soundesp_instance.set_device(app_data)
+    print(f"[debug-UI] SoundESP device -> {app_data}")
+    refresh_soundesp_status()
+
+
+def rescan_se_devices(sender=None, app_data=None):
+    """Кнопка 'Rescan': перечитывает список endpoint'ов (наушники воткнули/вынули)."""
+    try:
+        if dpg.does_item_exist("se_device_combo"):
+            dpg.configure_item("se_device_combo", items=soundesp_instance.device_choices())
+    except Exception:
+        pass
+    refresh_soundesp_status()
+
+
+def refresh_soundesp_status(sender=None, app_data=None):
+    """Обновление строк состояния - из поллинга и при смене устройства."""
+    try:
+        if dpg.does_item_exist("se_status_text"):
+            dpg.set_value("se_status_text", f"Status: {soundesp_instance.status_line()}")
+        if dpg.does_item_exist("se_device_text"):
+            dpg.set_value("se_device_text", f"Device: {soundesp_instance.device_line()}")
+        if dpg.does_item_exist("se_level_text"):
+            dpg.set_value("se_level_text", f"Level: {soundesp_instance.level_line()}")
+    except Exception:
+        pass
+
+
+def _poll_soundesp_status():
+    """
+    Перевзводит сам себя через фрейм-колбэк DPG.
+
+    Аудио-потоку нужна пара секунд, чтобы выбрать живой endpoint.
+    Строка 'Level' - индикатор для настройки Threshold, поэтому пока
+    функция включена, опрашиваем чаще. Работает в потоке DPG, поэтому
+    set_value безопасен.
+    """
+    step = 12 if soundesp_instance.enabled else 30
+    if soundesp_instance.enabled:
+        refresh_soundesp_status()
+    try:
+        dpg.set_frame_callback(dpg.get_frame_count() + step, lambda s, a: _poll_soundesp_status())
+    except Exception:
+        pass
+
+
+def start_soundesp_status_poll():
+    """Вызывается из main.py после setup_dearpygui()."""
+    _poll_soundesp_status()
 
 
 # ── UI Scale ──────────────────────────────────────────────────────

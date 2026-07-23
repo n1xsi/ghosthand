@@ -10,11 +10,13 @@ from scripts.mrc import mrc_instance
 from scripts.panic import panic_instance
 from scripts.pixel_triggerbot import pixel_trigger_instance
 from scripts.snaptap import snap_tap_instance
+from scripts.soundesp import soundesp_instance
 from scripts.turn180 import turn180_instance
 
 from src.config import BASE_VIEWPORT_WIDTH, BASE_VIEWPORT_HEIGHT, UI_SCALE
 from src.ui.gui import build_gui
 from src.ui import theme as theme_module
+from src.ui.callbacks import start_soundesp_status_poll
 from src.ui.overlay import overlay_instance
 from src.core.sysmon import sysmon
 
@@ -29,6 +31,7 @@ _SCRIPTS = [
     anti_aim_instance,
     fastzoom_instance,
     turn180_instance,
+    soundesp_instance,
 ]
 
 if __name__ == "__main__":
@@ -59,6 +62,7 @@ if __name__ == "__main__":
     panic_instance.start()
     overlay_instance.start()
     sysmon.start()
+    start_soundesp_status_poll()
 
     dpg.show_viewport()
     dpg.set_primary_window("Primary Window", True)

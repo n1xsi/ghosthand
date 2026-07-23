@@ -1,5 +1,6 @@
 from scripts.watermark import watermark_instance
 from scripts.aimpull import aimpull_instance
+from scripts.soundesp import soundesp_instance
 from src.core.sysmon import sysmon
 from src.core import input_sim
 from src.config import (
@@ -11,9 +12,11 @@ from src.config import (
     WM_FONT_NAME, WM_FONT_BASE, WM_FONT_MIN,
     CPU_WARN_THRESHOLD, GPU_WARN_THRESHOLD, RAM_WARN_THRESHOLD, PING_WARN_THRESHOLD,
     UI_SCALE,
+    SE_ARROW_SLOTS, SE_COLOR_FADE, SE_UNSURE_COLOR, SE_MIN_INTENSITY,
 )
 
 import colorsys
+import math
 import tkinter as tk
 import tkinter.font as tkfont
 import threading
@@ -43,6 +46,9 @@ class MasterOverlay:
         self.wm_text_gpu = None
         self.wm_text_ram = None
         self.wm_text_ping = None
+
+        # Пул стрелок Sound ESP
+        self.se_arrows = []
 
         # Реальное разрешение экрана
         self.screen_width = 0
@@ -107,6 +113,12 @@ class MasterOverlay:
             self.wm_text_gpu = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
             self.wm_text_ram = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
             self.wm_text_ping = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
+
+            # Пул треугольников для Sound ESP
+            self.se_arrows = [
+                self.canvas.create_polygon(0, 0, 0, 0, 0, 0, fill=SE_COLOR_FADE, state="hidden")
+                for _ in range(SE_ARROW_SLOTS)
+            ]
 
             print(f"[debug:overlay] Initialized. Resolution: {self.screen_width}x{self.screen_height}")
             self.update_loop()
@@ -181,6 +193,13 @@ class MasterOverlay:
             else:
                 self.canvas.itemconfig(self.circle_id, state="hidden")
 
+            # ── Sound ESP ─────────────────────────────────────────
+            if soundesp_instance.enabled:
+                self._draw_sound_esp()
+            else:
+                for item in self.se_arrows:
+                    self.canvas.itemconfig(item, state="hidden")
+
             # ── Watermark ─────────────────────────────────────────
             if watermark_instance.enabled:
                 self._draw_watermark()
@@ -194,6 +213,60 @@ class MasterOverlay:
             print(f"[debug:overlay] Update loop crashed: {e}")
 
         self.root.after(16, self.update_loop)
+
+    # ── Отрисовка Sound ESP ───────────────────────────────────────
+    @staticmethod
+    def _fade_color(peak: str, floor: str, t: float) -> str:
+        """Линейная интерполяция между двумя hex-цветами, t: 0 = floor, 1 = peak."""
+        t = max(0.0, min(1.0, t))
+        pr, pg, pb = int(peak[1:3], 16), int(peak[3:5], 16), int(peak[5:7], 16)
+        fr, fg, fb = int(floor[1:3], 16), int(floor[3:5], 16), int(floor[5:7], 16)
+        r = round(fr + (pr - fr) * t)
+        g = round(fg + (pg - fg) * t)
+        b = round(fb + (pb - fb) * t)
+        return f"#{r:02X}{g:02X}{b:02X}"
+
+    def _draw_sound_esp(self):
+        se = soundesp_instance
+        arrows = se.active_arrows()
+
+        cx, cy = self.screen_width // 2, self.screen_height // 2
+        radius, size = se.radius, se.size
+
+        for slot, item in enumerate(self.se_arrows):
+            if slot >= len(arrows):
+                self.canvas.itemconfig(item, state="hidden")
+                continue
+
+            angle, intensity, fb_known = arrows[slot]
+            if intensity < SE_MIN_INTENSITY:
+                self.canvas.itemconfig(item, state="hidden")
+                continue
+
+            # 0° = вверх (вперёд), + = по часовой (вправо).
+            # Экранный Y растёт вниз, поэтому вершина = -cos.
+            rad = math.radians(angle)
+            sin_a, cos_a = math.sin(rad), math.cos(rad)
+
+            # Кончик стрелки смотрит наружу от центра
+            tip_x = cx + sin_a * (radius + size)
+            tip_y = cy - cos_a * (radius + size)
+
+            # Основание - перпендикуляр к направлению
+            base_x = cx + sin_a * radius
+            base_y = cy - cos_a * radius
+            half = size * 0.45
+            left_x = base_x - cos_a * half
+            left_y = base_y - sin_a * half
+            right_x = base_x + cos_a * half
+            right_y = base_y + sin_a * half
+
+            # Недостоверная ось перед/зад (стерео + невнятный тембр) => серый
+            base_color = se.color if fb_known else SE_UNSURE_COLOR
+            color = self._fade_color(base_color, SE_COLOR_FADE, intensity)
+
+            self.canvas.coords(item, tip_x, tip_y, left_x, left_y, right_x, right_y)
+            self.canvas.itemconfig(item, fill=color, state="normal")
 
     # ── Отрисовка ватермарки ──────────────────────────────────────
     def _draw_watermark(self):

@@ -13,6 +13,7 @@ from scripts.bunnyhop import bhop_instance
 from scripts.fastzoom import fastzoom_instance
 from scripts.mrc import mrc_instance
 from scripts.pixel_triggerbot import pixel_trigger_instance
+from scripts.soundesp import soundesp_instance
 from scripts.turn180 import turn180_instance
 
 from src.config import (
@@ -26,6 +27,11 @@ from src.config import (
     VERSION,
     WM_POSITIONS,
     WM_DEFAULT_POSITION,
+    SE_RADIUS_MIN, SE_RADIUS_MAX,
+    SE_SIZE_MIN, SE_SIZE_MAX,
+    SE_DECAY_MIN, SE_DECAY_MAX,
+    SE_SENS_MIN, SE_SENS_MAX,
+    SE_COLOR,
 )
 from src.ui.callbacks import (
     toggle_aimpull, update_smooth, update_fov,
@@ -44,6 +50,9 @@ from src.ui.callbacks import (
     toggle_rainbow_watermark, update_watermark_position,
     toggle_wm_cpu, toggle_wm_gpu, toggle_wm_ram, toggle_wm_ping,
     toggle_wm_version, toggle_wm_status, toggle_wm_time,
+    toggle_soundesp, update_se_radius, update_se_size, update_se_decay,
+    update_se_sensitivity, toggle_se_footstep_filter, toggle_se_reject_own,
+    update_se_color, update_se_device, rescan_se_devices,
 )
 
 
@@ -186,6 +195,80 @@ def _tab_visuals():
     with dpg.tab(label="Visuals"):
         dpg.add_spacer(height=10)
         dpg.add_checkbox(label="Crosshair", enabled=False)
+
+        dpg.add_checkbox(label="Sound ESP", callback=toggle_soundesp)
+        with dpg.group(tag="soundesp_settings_group", show=False):
+            dpg.add_spacer(height=5)
+            with dpg.child_window(height=430, border=True):
+                dpg.add_text("Sound ESP Settings", color=SOFT_PURPLE, tag="header_soundesp")
+                dpg.add_slider_int(
+                    label="Ring Radius",
+                    default_value=soundesp_instance.radius,
+                    min_value=SE_RADIUS_MIN, max_value=SE_RADIUS_MAX,
+                    callback=update_se_radius,
+                )
+                dpg.add_slider_int(
+                    label="Arrow Size",
+                    default_value=soundesp_instance.size,
+                    min_value=SE_SIZE_MIN, max_value=SE_SIZE_MAX,
+                    callback=update_se_size,
+                )
+                dpg.add_slider_float(
+                    label="Decay (sec)",
+                    default_value=soundesp_instance.decay,
+                    min_value=SE_DECAY_MIN, max_value=SE_DECAY_MAX,
+                    callback=update_se_decay, format="%.2f",
+                )
+                dpg.add_slider_float(
+                    label="Threshold (dB)",
+                    default_value=soundesp_instance.sensitivity,
+                    min_value=SE_SENS_MIN, max_value=SE_SENS_MAX,
+                    callback=update_se_sensitivity, format="%.1f",
+                )
+                dpg.add_color_edit(
+                    label="Arrow Color",
+                    default_value=(255, 59, 59, 255),
+                    no_alpha=True,
+                    callback=update_se_color,
+                )
+                dpg.add_spacer(height=4)
+                dpg.add_checkbox(
+                    label="Footstep band only (200-2000 Hz)",
+                    default_value=soundesp_instance.footstep_filter,
+                    callback=toggle_se_footstep_filter,
+                )
+                dpg.add_checkbox(
+                    label="Ignore own shots / music",
+                    default_value=soundesp_instance.reject_own,
+                    callback=toggle_se_reject_own,
+                )
+                dpg.add_spacer(height=4)
+                dpg.add_separator()
+                dpg.add_spacer(height=4)
+                dpg.add_combo(
+                    label="Audio Source",
+                    tag="se_device_combo",
+                    items=soundesp_instance.device_choices(),
+                    default_value=soundesp_instance.AUTO_DEVICE,
+                    callback=update_se_device,
+                )
+                dpg.add_button(label="Rescan Devices", callback=rescan_se_devices, width=140)
+                dpg.add_spacer(height=4)
+                dpg.add_text("Status: Disabled", tag="se_status_text", color=ADDITIONAL_BLACK)
+                dpg.add_text("Device: -", tag="se_device_text", color=ADDITIONAL_BLACK)
+                dpg.add_text("Level: -", tag="se_level_text", color=ADDITIONAL_BLACK)
+                dpg.add_text(
+                    "Bearing only - no distance, no height.\n"
+                    "Threshold = dB a sound must rise above the rolling\n"
+                    "background to count. Watch Level while playing:\n"
+                    "set Threshold just above the idle reading.\n"
+                    "Stereo output: front/back is a timbre guess, such\n"
+                    "arrows are drawn grey. For a true 360 bearing use a\n"
+                    "real 5.1/7.1 endpoint and turn OFF spatial sound\n"
+                    "(virtual surround loopback is silent).",
+                    color=ADDITIONAL_BLACK,
+                )
+
         dpg.add_checkbox(label="Watermark", callback=toggle_watermark)
         with dpg.group(tag="watermark_settings_group", show=False):
             dpg.add_spacer(height=5)
@@ -323,6 +406,8 @@ def _tab_keybinds():
         dpg.add_spacer(height=10)
         dpg.add_text("FastZoom: mouse3 (click/hold)")
         dpg.add_text("180°-turn: T (click)")
+        dpg.add_spacer(height=10)
+        dpg.add_text("Sound ESP: no key (menu toggle only)")
 
 
 # ── Точка входа ───────────────────────────────────────────────────

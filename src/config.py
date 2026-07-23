@@ -53,6 +53,7 @@ THEMED_HEADER_TAGS = [
     "header_custom_theme",
     "header_theme_label",
     "header_watermark",
+    "header_soundesp",
 ]
 
 # Hex-версия акцентного цвета (tkinter fallback до применения темы)
@@ -83,7 +84,31 @@ WM_POSITIONS = [                # Варианты позиции ватерма
     "Bottom Left", "Bottom Center", "Bottom Right",
 ]
 
-# ── Системный монитор (пороги красной подсветки) ──────────────────
+# ── Sound ESP (Offscreen Arrows) ──────────────────────────────────
+# Пеленг по системному звуку (WASAPI loopback). Памяти игры не читает.
+SE_RADIUS = 190                # Радиус кольца стрелок от центра экрана (пиксели)
+SE_RADIUS_MIN = 80
+SE_RADIUS_MAX = 500
+SE_SIZE = 22                   # Длина стрелки (пиксели)
+SE_SIZE_MIN = 10
+SE_SIZE_MAX = 60
+SE_DECAY = 0.55                # Сколько секунд живёт стрелка после звука
+SE_DECAY_MIN = 0.15
+SE_DECAY_MAX = 2.0
+SE_SENSITIVITY = 6.0           # Порог превышения над фоном (дБ), меньше = чувствительнее
+SE_SENS_MIN = 2.0
+SE_SENS_MAX = 20.0
+SE_COLOR = "#FF3B3B"         # Цвет стрелки на пике
+SE_COLOR_FADE = "#4A1010"    # Цвет на исходе затухания
+SE_MAX_ARROWS = 6              # Максимум одновременных стрелок
+SE_ARROW_SLOTS = 8             # Сколько polygon-объектов держим в пуле canvas
+SE_UNSURE_COLOR = "#8A8A8A"  # Цвет, когда ось перед/зад недостоверна
+SE_MIN_INTENSITY = 0.08        # Ниже - не рисуем вовсе
+SE_UNSURE_DIM = 0.35           # Множитель яркости для всенаправленного звука (пеленга нет)
+SE_TRUST_CONF = 0.50           # Ниже этой доли от потолка — стрелка серая
+SE_MERGE_DEG = 12.0            # Стрелки ближе этого угла сливаются в одну
+
+
 CPU_WARN_THRESHOLD = 80    # %
 GPU_WARN_THRESHOLD = 80    # %
 RAM_WARN_THRESHOLD  = 85   # %
