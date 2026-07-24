@@ -194,12 +194,11 @@ def _tab_movement():
 def _tab_visuals():
     with dpg.tab(label="Visuals"):
         dpg.add_spacer(height=10)
-        dpg.add_checkbox(label="Crosshair", enabled=False)
-
+        dpg.add_text("ESP", color=SOFT_PURPLE, tag="header_esp_label")
         dpg.add_checkbox(label="Sound ESP", callback=toggle_soundesp)
         with dpg.group(tag="soundesp_settings_group", show=False):
             dpg.add_spacer(height=5)
-            with dpg.child_window(height=430, border=True):
+            with dpg.child_window(height=250, border=True):
                 dpg.add_text("Sound ESP Settings", color=SOFT_PURPLE, tag="header_soundesp")
                 dpg.add_slider_int(
                     label="Ring Radius",
@@ -269,6 +268,14 @@ def _tab_visuals():
                     color=ADDITIONAL_BLACK,
                 )
 
+        dpg.add_spacer(height=6)
+        dpg.add_separator()
+        dpg.add_spacer(height=6)
+
+        dpg.add_text("Overlay", color=SOFT_PURPLE, tag="header_overlay_label")
+
+        dpg.add_checkbox(label="Crosshair", enabled=False)
+
         dpg.add_checkbox(label="Watermark", callback=toggle_watermark)
         with dpg.group(tag="watermark_settings_group", show=False):
             dpg.add_spacer(height=5)
@@ -292,7 +299,7 @@ def _tab_visuals():
                     dpg.add_selectable(label="Ping",          tag="sel_ping",    callback=toggle_wm_ping)
 
 
-        dpg.add_spacer(height=8)
+        dpg.add_spacer(height=6)
         dpg.add_separator()
         dpg.add_spacer(height=6)
 
@@ -339,10 +346,11 @@ def _tab_visuals():
                     dpg.add_button(label="Reset", callback=reset_theme, width=80)
                     dpg.add_button(label="Apply Custom Theme", callback=apply_custom_theme, width=-1)
 
-        dpg.add_spacer(height=8)
+        dpg.add_spacer(height=6)
         dpg.add_separator()
         dpg.add_spacer(height=6)
 
+        dpg.add_text("UI", color=SOFT_PURPLE, tag="header_ui_label")
         dpg.add_combo(
             label="UI Scale",
             items=["100%", "125%", "140%", "150%", "175%", "200%"],
