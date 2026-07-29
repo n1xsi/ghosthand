@@ -70,6 +70,7 @@
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/706990/84e0869208df5df1d65605ebb5bb0b95d6f2d596.jpg" align="top"> BLOCKPOST LEGACY *(ez in-game AC)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/500/428df26bc35b09319e31b1ffb712487b20b3245c.jpg" align="top"> Left 4 Dead **+** Left 4 Dead 2 *(ez vac)*
   * <img src="https://cdn2.steamgriddb.com/icon/3fd33fca2c8309458ce87fc2777e51f6/32/32x32.png" align="top"> Postal 2 Multiplayer
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/30/aadc0ce51ff6ba2042d633f8ec033b0de62091d0.jpg" align="top"> Day of Defeat *(ez server AC)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/20/38ea7ebe3c1abbbbf4eabdbef174c41a972102b9.jpg" align="top"> TF Classic *(ez server AC)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/40/c525f76c8bc7353db4fd74b128c4ae2028426c2a.jpg" align="top"> Deathmatch Classic
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/70/95be6d131fc61f145797317ca437c9765f24b41c.jpg" align="top"> Half-Life 1
