@@ -98,7 +98,7 @@ def _tab_aim():
                 dpg.add_slider_float(
                     label="Reaction Delay",
                     default_value=pixel_trigger_instance.reaction_delay,
-                    min_value=0.005, max_value=0.2,
+                    min_value=0.005, max_value=0.5,
                     callback=update_pixel_trigger_reaction_delay,
                 )
                 dpg.add_slider_int(
@@ -134,7 +134,7 @@ def _tab_aim():
                 dpg.add_slider_int(
                     label="Strength",
                     default_value=mrc_instance.strength,
-                    min_value=1, max_value=6,
+                    min_value=1, max_value=50,
                     callback=update_mrc_strength,
                 )
                 dpg.add_slider_float(
@@ -183,7 +183,7 @@ def _tab_movement():
                 dpg.add_slider_float(
                     label="Jump Delay (sec)",
                     default_value=bhop_instance.delay,
-                    min_value=0.005, max_value=0.3,
+                    min_value=0.005, max_value=0.4,
                     callback=update_bhop_delay, format="%.3f",
                 )
                 dpg.add_text("Lower delay = Faster spam. Hold SPACE to bhop.", color=ADDITIONAL_BLACK)
