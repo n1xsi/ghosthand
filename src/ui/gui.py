@@ -31,7 +31,6 @@ from src.config import (
     SE_SIZE_MIN, SE_SIZE_MAX,
     SE_DECAY_MIN, SE_DECAY_MAX,
     SE_SENS_MIN, SE_SENS_MAX,
-    SE_COLOR,
 )
 from src.ui.callbacks import (
     toggle_aimpull, update_smooth, update_fov,
@@ -289,14 +288,14 @@ def _tab_visuals():
                     callback=update_watermark_position,
                 )
                 with dpg.collapsing_header(label="Display: Version, Status, Time", tag="wm_monitor_header"):
-                    dpg.add_selectable(label="Version",       tag="sel_version", callback=toggle_wm_version, default_value=True)
-                    dpg.add_selectable(label="System Status", tag="sel_status",  callback=toggle_wm_status,  default_value=True)
-                    dpg.add_selectable(label="Time",          tag="sel_time",    callback=toggle_wm_time,    default_value=True)
+                    dpg.add_selectable(label="Version", tag="sel_version", callback=toggle_wm_version, default_value=True)
+                    dpg.add_selectable(label="System Status", tag="sel_status", callback=toggle_wm_status, default_value=True)
+                    dpg.add_selectable(label="Time", tag="sel_time", callback=toggle_wm_time, default_value=True)
                     dpg.add_separator()
-                    dpg.add_selectable(label="CPU Load",      tag="sel_cpu",     callback=toggle_wm_cpu)
-                    dpg.add_selectable(label="GPU Load",      tag="sel_gpu",     callback=toggle_wm_gpu)
-                    dpg.add_selectable(label="RAM Load",      tag="sel_ram",     callback=toggle_wm_ram)
-                    dpg.add_selectable(label="Ping",          tag="sel_ping",    callback=toggle_wm_ping)
+                    dpg.add_selectable(label="CPU Load", tag="sel_cpu", callback=toggle_wm_cpu)
+                    dpg.add_selectable(label="GPU Load", tag="sel_gpu", callback=toggle_wm_gpu)
+                    dpg.add_selectable(label="RAM Load", tag="sel_ram", callback=toggle_wm_ram)
+                    dpg.add_selectable(label="Ping", tag="sel_ping", callback=toggle_wm_ping)
 
 
         dpg.add_spacer(height=6)

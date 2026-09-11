@@ -9,7 +9,6 @@ class ThemeColors(TypedDict):
     frame_bg:     tuple[int, int, int, int]
     text_accent:  tuple[int, int, int, int]
 
-
 THEME_PRESETS: dict[str, ThemeColors] = {
     "GhostHand": {
         "accent":       (139, 0,   255, 255),
@@ -107,7 +106,6 @@ SE_MIN_INTENSITY = 0.08        # Ниже - не рисуем вовсе
 SE_UNSURE_DIM = 0.35           # Множитель яркости для всенаправленного звука (пеленга нет)
 SE_TRUST_CONF = 0.50           # Ниже этой доли от потолка — стрелка серая
 SE_MERGE_DEG = 12.0            # Стрелки ближе этого угла сливаются в одну
-
 
 CPU_WARN_THRESHOLD = 80    # %
 GPU_WARN_THRESHOLD = 80    # %
