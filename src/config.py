@@ -69,6 +69,7 @@ ADDITIONAL_BLACK = (150, 150, 150, 200)
 WM_BG_FILL = "#1A1A1A"        # Фон ватермарки
 WM_BG_OUTLINE = "#333333"     # Рамка фона
 WM_TEXT_COLOR = "white"         # Цвет основного текста
+WM_SEPARATOR = " | "            # Разделитель сегментов (всегда WM_TEXT_COLOR)
 WM_STATUS_PAUSE = "#FF6B6B"   # Цвет статуса при глобальной паузе
 WM_STATUS_ACTIVE = "#55FF88"  # Цвет статуса при активном состоянии
 WM_MARGIN = 20                  # Отступ от края экрана (пикс.)

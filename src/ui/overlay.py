@@ -6,7 +6,7 @@ from src.core import input_sim
 from src.config import (
     VERSION,
     DEEP_PURPLE_HEX,
-    WM_BG_FILL, WM_BG_OUTLINE, WM_TEXT_COLOR,
+    WM_BG_FILL, WM_BG_OUTLINE, WM_TEXT_COLOR, WM_SEPARATOR,
     WM_STATUS_ACTIVE, WM_STATUS_PAUSE, WM_WARN_COLOR,
     WM_MARGIN, WM_PAD_X, WM_PAD_Y, WM_HEADER_H,
     WM_FONT_NAME, WM_FONT_BASE, WM_FONT_MIN,
@@ -46,6 +46,8 @@ class MasterOverlay:
         self.wm_text_gpu = None
         self.wm_text_ram = None
         self.wm_text_ping = None
+        self.wm_seps = []            # Пул разделителей "|" — всегда белые
+        self.wm_texts = ()           # Все текстовые элементы ватермарки
 
         # Пул стрелок Sound ESP
         self.se_arrows = []
@@ -114,6 +116,16 @@ class MasterOverlay:
             self.wm_text_ram = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
             self.wm_text_ping = self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
 
+            wm_segments = (
+                self.wm_text_prefix, self.wm_text_version, self.wm_text_status, self.wm_text_suffix,
+                self.wm_text_cpu, self.wm_text_gpu, self.wm_text_ram, self.wm_text_ping,
+            )
+            self.wm_seps = [
+                self.canvas.create_text(0, 0, text="", fill=WM_TEXT_COLOR, font=font_tuple, anchor="nw")
+                for _ in wm_segments
+            ]
+            self.wm_texts = (*wm_segments, *self.wm_seps)
+
             # Пул треугольников для Sound ESP
             self.se_arrows = [
                 self.canvas.create_polygon(0, 0, 0, 0, 0, 0, fill=SE_COLOR_FADE, state="hidden")
@@ -179,8 +191,7 @@ class MasterOverlay:
                 font_tuple = (WM_FONT_NAME, font_size, "bold")
                 self._tk_font.config(size=font_size)
                 self._text_h = self._tk_font.metrics("linespace")
-                for item in (self.wm_text_prefix, self.wm_text_version, self.wm_text_status, self.wm_text_suffix,
-                             self.wm_text_cpu, self.wm_text_gpu, self.wm_text_ram, self.wm_text_ping):
+                for item in self.wm_texts:
                     self.canvas.itemconfig(item, font=font_tuple)
 
             # ── FOV Circle ────────────────────────────────────────
@@ -204,9 +215,7 @@ class MasterOverlay:
             if watermark_instance.enabled:
                 self._draw_watermark()
             else:
-                for item in (self.wm_bg, self.wm_header, self.wm_text_prefix,
-                             self.wm_text_version, self.wm_text_status, self.wm_text_suffix,
-                             self.wm_text_cpu, self.wm_text_gpu, self.wm_text_ram, self.wm_text_ping):
+                for item in (self.wm_bg, self.wm_header, *self.wm_texts):
                     self.canvas.itemconfig(item, state="hidden")
 
         except Exception as e:
@@ -276,38 +285,46 @@ class MasterOverlay:
         st_txt = "GLOBAL PAUSE" if input_sim.GLOBAL_PAUSE else "SYSTEM ACTIVE"
         st_color = WM_STATUS_PAUSE if input_sim.GLOBAL_PAUSE else WM_STATUS_ACTIVE
 
-        cpu_str = f" | CPU: {sysmon.cpu_percent:.0f}%"
-        gpu_str = f" | GPU: {sysmon.gpu_percent:.0f}%"
-        ram_str = f" | RAM: {sysmon.ram_percent:.0f}%"
-        ping_str = f" | Ping: {sysmon.ping_ms}ms"
+        cpu_str = f"CPU: {sysmon.cpu_percent:.0f}%"
+        gpu_str = f"GPU: {sysmon.gpu_percent:.0f}%"
+        ram_str = f"RAM: {sysmon.ram_percent:.0f}%"
+        ping_str = f"Ping: {sysmon.ping_ms}ms"
 
         cpu_color = WM_WARN_COLOR if sysmon.cpu_percent >= CPU_WARN_THRESHOLD else WM_TEXT_COLOR
         gpu_color = WM_WARN_COLOR if sysmon.gpu_percent >= GPU_WARN_THRESHOLD else WM_TEXT_COLOR
         ram_color = WM_WARN_COLOR if sysmon.ram_percent >= RAM_WARN_THRESHOLD else WM_TEXT_COLOR
         ping_color = WM_WARN_COLOR if sysmon.ping_ms >= PING_WARN_THRESHOLD else WM_TEXT_COLOR
 
+        # Разделители в тексты сегментов не входят — их ставит сборка ниже
         segments = [
-            (self.wm_text_prefix, "GHOSTHAND" if wm.show_version else "GHOSTHAND | ", WM_TEXT_COLOR, True),
-            (self.wm_text_version, f" | {VERSION} | ", WM_TEXT_COLOR, wm.show_version),
-            (self.wm_text_status, f"{st_txt}", st_color, wm.show_status),
-            (self.wm_text_suffix, f" | {time.strftime('%H:%M:%S')}", WM_TEXT_COLOR, wm.show_time),
+            (self.wm_text_prefix, "GHOSTHAND", WM_TEXT_COLOR, True),
+            (self.wm_text_version, VERSION, WM_TEXT_COLOR, wm.show_version),
+            (self.wm_text_status, st_txt, st_color, wm.show_status),
+            (self.wm_text_suffix, time.strftime('%H:%M:%S'), WM_TEXT_COLOR, wm.show_time),
             (self.wm_text_cpu, cpu_str, cpu_color, wm.show_cpu),
             (self.wm_text_gpu, gpu_str, gpu_color, wm.show_gpu),
             (self.wm_text_ram, ram_str, ram_color, wm.show_ram),
             (self.wm_text_ping, ping_str, ping_color, wm.show_ping),
         ]
 
+        parts = []  # (item, text, color) слева направо
+        for (item, text, color, visible), sep in zip(segments, self.wm_seps):
+            if not visible:
+                self.canvas.itemconfig(item, text="", state="hidden")
+                self.canvas.itemconfig(sep, text="", state="hidden")
+                continue
+            if parts:
+                parts.append((sep, WM_SEPARATOR, WM_TEXT_COLOR))
+            else:
+                self.canvas.itemconfig(sep, text="", state="hidden")
+            parts.append((item, text, color))
+
         # Обновляем canvas-элементы и считаем суммарную ширину
         total_w = 0
         widths = []
-        for item, text, color, visible in segments:
-            if visible:
-                self.canvas.itemconfig(
-                    item, text=text, fill=color, state="normal")
-                w = self._w(text)
-            else:
-                self.canvas.itemconfig(item, text="", state="hidden")
-                w = 0
+        for item, text, color in parts:
+            self.canvas.itemconfig(item, text=text, fill=color, state="normal")
+            w = self._w(text)
             widths.append(w)
             total_w += w
 
@@ -326,10 +343,9 @@ class MasterOverlay:
 
         # ── Расстановка текстов слева направо ─────────────────────
         cx, ty = x1 + WM_PAD_X, y1 + WM_PAD_Y
-        for (item, _, _, visible), w in zip(segments, widths):
-            if visible:
-                self.canvas.coords(item, cx, ty)
-                cx += w
+        for (item, _, _), w in zip(parts, widths):
+            self.canvas.coords(item, cx, ty)
+            cx += w
 
 
 # Экземпляр класса MasterOverlay для импорта в меню
