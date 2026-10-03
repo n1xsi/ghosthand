@@ -80,6 +80,7 @@
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/320/795e85364189511f4990861b578084deef086cb1.jpg" align="top"> Half-Life 2: Deathmatch *(ez vac)*
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/41070/2e7a17d4b345ffb13ef3d9e39257c2659fe4a86b.jpg" align="top"> Serious Sam 3: BFE
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/218620/a6abc0d0c1e79c0b5b0f5c8ab81ce9076a542414.jpg" align="top"> PAYDAY 2
+  * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/493520/c211299ef6127057dfe0271626bb044e79c28f78.jpg" align="top"> GTFO
 
   **:feelsgood: Только в Secured-режиме** _(высокий риск детекта античитом за какие-то функции)_:
   * <img src="https://shared.fastly.steamstatic.com/community_assets/images/apps/730/8dbc71957312bbd3baea65848b545be9eae2a355.jpg" align="top"> CS 2 **(bad for VACNET)**
