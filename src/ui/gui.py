@@ -172,7 +172,7 @@ def _tab_antiaim():
 def _tab_movement():
     with dpg.tab(label="Movement"):
         dpg.add_spacer(height=10)
-
+        dpg.add_text("Velocity", color=SOFT_PURPLE, tag="header_velocity_label")
         dpg.add_checkbox(label="Bhop", callback=toggle_bhop)
         with dpg.group(tag="bhop_settings_group", show=False):
             dpg.add_spacer(height=5)
@@ -186,7 +186,13 @@ def _tab_movement():
                     callback=update_bhop_delay, format="%.3f",
                 )
                 dpg.add_text("Lower delay = Faster spam. Hold SPACE to bhop.", color=ADDITIONAL_BLACK)
+        dpg.add_checkbox(label="Autostrafer", enabled=False)
 
+        dpg.add_spacer(height=6)
+        dpg.add_separator()
+        dpg.add_spacer(height=6)
+
+        dpg.add_text("Handling", color=SOFT_PURPLE, tag="header_handling_label")
         dpg.add_checkbox(label="Snap Tap", callback=toggle_snap_tap)
 
 
